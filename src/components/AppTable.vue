@@ -793,4 +793,13 @@ template {
   position: relative;
   justify-content: center;
 }
+
+@media (min-width: 1024px) {
+  .battleAreaContainer {
+  flex-direction: row;
+}}
+@media (max-width: 720px) {
+  .battleAreaContainer {
+  flex-direction: column;
+}}
 </style>
