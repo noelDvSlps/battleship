@@ -1,5 +1,5 @@
 <template class="template-class">
-  <button v-on:click="play" type="button">Click Me to Toggle Sound</button>
+  <!-- <button v-on:click="play" type="button">Click Me to Toggle Sound</button> -->
   <audio ref="audioElm" src="War.mp3"></audio>
   <div id="main" class="main">
     <div
