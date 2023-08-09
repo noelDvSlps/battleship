@@ -793,20 +793,27 @@ template {
   position: relative;
   justify-content: center;
 }
+
 @media (min-width: 360px) {
   .battleAreaContainer {
-  flex-direction: column;
-}}
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+  }
+}
 
 @media (min-width: 720px) {
   .battleAreaContainer {
-  flex-direction: row;
-}}
+    flex-direction: row;
+  }
+}
 
 @media (min-width: 1024px) {
   .battleAreaContainer {
-  flex-direction: row;
-}}
+    flex-direction: row;
+  }
+}
+
 
 
 </style>
