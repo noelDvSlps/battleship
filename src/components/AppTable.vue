@@ -15,7 +15,7 @@
         justify-content: center;
       "
     >
-      <div>
+      <div style="text-align: center;">
         <h1 style="color: black; border-radius: 8px; background-color: rgba(255,255,255,0.25); font-size: 4rem">{{ this.gameResult }}</h1>
         <div
           style="
@@ -793,13 +793,20 @@ template {
   position: relative;
   justify-content: center;
 }
+@media (min-width: 360px) {
+  .battleAreaContainer {
+  flex-direction: column;
+}}
+
+@media (min-width: 720px) {
+  .battleAreaContainer {
+  flex-direction: row;
+}}
 
 @media (min-width: 1024px) {
   .battleAreaContainer {
   flex-direction: row;
 }}
-@media (max-width: 720px) {
-  .battleAreaContainer {
-  flex-direction: column;
-}}
+
+
 </style>
