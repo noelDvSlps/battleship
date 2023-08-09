@@ -42,7 +42,7 @@
       <RoundBomb v-for="index in 10" :key="index" :id="'bomb' + index"></RoundBomb>
 
       <div name="baseOne-container">
-        <div><h1 style="display: inline;">YOUR BASE</h1> <button v-if="this.baseOneAllShotCells.length === 0" @click="this.reposition()" style="margin-left: 25px;">Reposition</button></div>
+        <div><h1 style="display: inline;">YOUR BASE</h1> <button v-if="this.baseOneAllShotCells.length === 0 && this.repositionButton === true" @click="this.reposition()" style="margin-left: 25px;">Reposition</button></div>
         
         <p>{{ this.pcMsg }}</p>
         <p>{{ this.baseOneSank }} of your {{ this.baseOneShips.length }} ships sank!</p>
@@ -192,7 +192,8 @@ export default {
 
       finish: true,
 
-      gridSize: 6
+      gridSize: 6,
+      repositionButton: true
     }
   },
   methods: {
@@ -404,7 +405,11 @@ export default {
       this.imgPositionX = this.imgPositionX - 50
     },
     reposition(){
+      this.repositionButton=false
      this.playAgain()
+    setTimeout(() => {
+      this.repositionButton=true
+    }, 500);
     },
     refresh() {
       this.baseOneShips = [] //position of ships
