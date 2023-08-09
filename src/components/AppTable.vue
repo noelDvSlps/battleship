@@ -141,6 +141,7 @@
 </template>
 <script>
 import RoundBomb from './RoundBomb.vue'
+
 export default {
   name: 'AppTable',
   components: {
@@ -235,8 +236,9 @@ export default {
       }
     },
     fire(arrayShips) {
-      console.log('START')
-
+     
+      const bombSound = new Audio ("bombSound.wav")
+      bombSound.play()
       // initialization 👇🏾
       let out = true
       let found = true
@@ -324,11 +326,8 @@ export default {
 
       let bombTop = 0
       let bomb = document.getElementById('bomb1')
-      // alert(document.getElementById(`bomb1`).style.visibility)
       for (let i = 1; i <= 10; i++) {
         if (document.getElementById(`bomb${i}`).style.visibility !== 'visible') {
-          //  alert(i)
-          // if (i === 10){i = 0}
           bomb = document.getElementById(`bomb${i}`)
           break
         }
@@ -746,6 +745,7 @@ export default {
     this.positionShips('baseTwo', this.baseTwoShips)
   }
 }
+
 </script>
 <style scoped>
 
