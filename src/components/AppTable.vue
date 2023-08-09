@@ -1,6 +1,6 @@
 <template class="template-class">
   <!-- <button v-on:click="play" type="button">Click Me to Toggle Sound</button> -->
-  <audio ref="audioElm" src="War.mp3"></audio>
+  <audio loop ref="audioElm" :src = this.backgroundSound></audio>
   <div id="main" class="main">
     <div
       v-if="gameOver === true"
@@ -196,11 +196,13 @@ export default {
       finish: true,
 
       gridSize: 6,
-      repositionButton: true
+      repositionButton: true,
+      backgroundSound: "War.mp3"
     }
   },
   methods: {
     playAgain() {
+      this.backgroundSound = "War.mp3"
       this.gameOver = false
       // document.getElementById("gameOverWindow").style.visibility="hidden"
       this.refresh()
@@ -237,15 +239,11 @@ export default {
         baseHits['shipIndex_' + this.latestShipIndexFind] = { cells: [cell], sank: false }
       }
     },
-    play: function() {
+    play() {
       var a = this.$refs.audioElm;
-      
-      if (a.paused) {
+      if (this.backgroundSound!== null) {
         a.play();
       } 
-      if (this.gameOver){
-        a.pause()
-      }
     },
     fire(arrayShips) {
       
@@ -254,6 +252,7 @@ export default {
       //   warSound.play()
         
       // } 
+     
       this.play()
      
      
@@ -536,7 +535,8 @@ export default {
        
         if (gameOver) {
           this.gameOver = true
-          this.play()
+          this.backgroundSound = null
+          
         }
       return gameOver
     },
