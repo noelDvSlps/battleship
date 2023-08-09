@@ -195,7 +195,7 @@ export default {
 
       finish: true,
 
-      gridSize: 12,
+      gridSize: 6,
       repositionButton: true,
       backgroundSound: "War.mp3"
     }
