@@ -42,10 +42,10 @@
       <RoundBomb v-for="index in 10" :key="index" :id="'bomb' + index"></RoundBomb>
 
       <div name="baseOne-container">
-        <div><h1 style="display: inline;">YOU</h1> <button v-if="this.baseOneAllShotCells.length === 0" @click="this.reposition()" style="margin-left: 25px;">Reposition</button></div>
+        <div><h1 style="display: inline;">YOUR BASE</h1> <button v-if="this.baseOneAllShotCells.length === 0" @click="this.reposition()" style="margin-left: 25px;">Reposition</button></div>
         
         <p>{{ this.pcMsg }}</p>
-        <h2>{{ this.baseOneSank }} of your {{ this.baseOneShips.length }} ships sank!</h2>
+        <p>{{ this.baseOneSank }} of your {{ this.baseOneShips.length }} ships sank!</p>
         <div name="table-container" style="position: relative">
           <table id="baseOne" style="background: transparent">
             <tr v-for="row_index in this.gridSize" :key="row_index">
@@ -73,9 +73,9 @@
       </div>
 
       <div id="baseTwo-container" name="baseTwo-container">
-        <h1>PC</h1>
+        <h1>PC Base (Click 👇🏾)</h1>
         <p>{{ this.playerMsg }}</p>
-        <h2>{{ this.baseTwoSank }} of PC's {{ this.baseTwoShips.length }} ships sank!</h2>
+        <p>{{ this.baseTwoSank }} of PC's {{ this.baseTwoShips.length }} ships sank!</p>
         <div name="table-container" style="position: relative">
           <table id="baseTwo" style="background: transparent">
             <tr v-for="row_index in this.gridSize" :key="row_index">
@@ -206,7 +206,7 @@ export default {
       this.positionShips('baseTwo', this.baseTwoShips)
     },
     quit() {
-      alert(this.gameOver)
+      this.playAgain()
     },
     sleep(milliseconds) {
       let counter = 0
@@ -798,7 +798,7 @@ template {
   .battleAreaContainer {
     flex-direction: column;
     justify-content: center;
-    gap: 0;
+  
   }
 }
 
@@ -810,7 +810,9 @@ template {
 
 @media (min-width: 1024px) {
   .battleAreaContainer {
-    flex-direction: row;
+  
+  flex-direction: row;
+ 
   }
 }
 

@@ -19,15 +19,12 @@ a,
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+/* @media (min-width: 1024px) {
+ 
 
   #app {
     display: flex;
     flex-direction: column;
     padding: 0 0;
   }
-}
+} */
