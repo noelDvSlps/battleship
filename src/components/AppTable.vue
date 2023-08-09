@@ -162,8 +162,7 @@ export default {
       imgPositionY: 0,
       rotate: '0deg',
       cellSize: 50,
-      w: 55,
-      h: 55,
+      
 
       gameResult: '',
       playerMsg: 'Battle Ship',
@@ -343,7 +342,7 @@ export default {
 
         bombTop = bombTop + 10
 
-        if (bombTop >= 70 + 50 * row) {
+        if (bombTop >= 50 + 50 * row) {
           clearInterval(timer) // finish the animation after 2 seconds
           setTimeout(() => {
             bomb.style.visibility = 'hidden'
