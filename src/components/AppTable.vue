@@ -1,5 +1,5 @@
 <template class="template-class">
-  <button v-on:click="play" type="button">Click Me to Toggle Sound</button>
+  <!-- <button v-on:click="play" type="button">Click Me to Toggle Sound</button> -->
   <audio ref="audioElm" src="War.mp3"></audio>
   <div id="main" class="main">
     <div
@@ -516,7 +516,6 @@ export default {
       this.attack(row, col, id, arrayShips, arrayCellsAlreadyFired, baseHits)
       if (this.isGameOver()) {
         this.gameResult = 'Game Over: You Win'
-        this.gameOver = true
         return
       }
 
@@ -528,19 +527,18 @@ export default {
       this.PcAttackPlayer()
 
       if (this.isGameOver()) {
-        this.gameOver = true
         this.gameResult = 'Game over: You Lose'
       }
     },
     isGameOver() {
-      // if(this.baseOneShips.length === this.baseOneSank){
-      //   this.score += 2000 //winning bonus points
-      // }
-
-      return (
-        this.baseOneShips.length === this.baseOneSank ||
+      const gameOver = this.baseOneShips.length === this.baseOneSank ||
         this.baseTwoShips.length === this.baseTwoSank
-      )
+       
+        if (gameOver) {
+          this.gameOver = true
+          this.play()
+        }
+      return gameOver
     },
     isHit(row_index, col_index, arrayShips) {
       let findUnit = false
