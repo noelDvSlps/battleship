@@ -1,4 +1,6 @@
 <template class="template-class">
+  <button v-on:click="play" type="button">Click Me to Toggle Sound</button>
+  <audio ref="audioElm" src="War.mp3"></audio>
   <div id="main" class="main">
     <div
       v-if="gameOver === true"
@@ -235,7 +237,23 @@ export default {
         baseHits['shipIndex_' + this.latestShipIndexFind] = { cells: [cell], sank: false }
       }
     },
+    play: function() {
+      var a = this.$refs.audioElm;
+      
+      if (a.paused) {
+        a.play();
+      } else {
+        a.pause();
+      }
+    },
     fire(arrayShips) {
+      
+      const warSound = new Audio ("War.mp3")
+      if (this.baseOneAllShotCells.length === 0){
+        warSound.play()
+        
+      } 
+     
      
       const bombSound = new Audio ("bombSound.wav")
       bombSound.play()
@@ -741,6 +759,7 @@ export default {
     }
   },
   mounted() {
+    
     this.positionShips('baseOne', this.baseOneShips)
     this.positionShips('baseTwo', this.baseTwoShips)
   }
