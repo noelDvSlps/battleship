@@ -1,6 +1,6 @@
 <template class="template-class">
   <!-- <button v-on:click="play" type="button">Click Me to Toggle Sound</button> -->
-  <audio loop ref="audioElm" :src = this.backgroundSound></audio>
+  <audio loop ref="audioElm" :src="this.backgroundSound"></audio>
   <div id="main" class="main">
     <div
       v-if="gameOver === true"
@@ -17,8 +17,17 @@
         justify-content: center;
       "
     >
-      <div style="text-align: center;">
-        <h1 style="color: black; border-radius: 8px; background-color: rgba(255,255,255,0.25); font-size: 4rem">{{ this.gameResult }}</h1>
+      <div style="text-align: center">
+        <h1
+          style="
+            color: black;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.25);
+            font-size: 4rem;
+          "
+        >
+          {{ this.gameResult }}
+        </h1>
         <div
           style="
             display: flex;
@@ -35,17 +44,24 @@
       </div>
     </div>
 
-    
-      <h1 >BATTLESHIP</h1>
-      <h2 >SCORE: {{ this.score }}</h2>
-  
+    <h1>BATTLESHIP</h1>
+    <h2>SCORE: {{ this.score }}</h2>
 
     <div id="battleAreaContainer" class="battleAreaContainer" style="position: relative">
       <RoundBomb v-for="index in 10" :key="index" :id="'bomb' + index"></RoundBomb>
 
       <div name="baseOne-container">
-        <div><h1 style="display: inline;">YOUR BASE</h1> <button v-if="this.baseOneAllShotCells.length === 0 && this.repositionButton === true" @click="this.reposition()" style="margin-left: 25px;">Reposition</button></div>
-        
+        <div>
+          <h1 style="display: inline">YOUR BASE</h1>
+          <button
+            v-if="this.baseOneAllShotCells.length === 0 && this.repositionButton === true"
+            @click="this.reposition()"
+            style="margin-left: 25px"
+          >
+            Reposition
+          </button>
+        </div>
+
         <p>{{ this.pcMsg }}</p>
         <p>{{ this.baseOneSank }} of your {{ this.baseOneShips.length }} ships sank!</p>
         <div name="table-container" style="position: relative">
@@ -165,7 +181,6 @@ export default {
       imgPositionY: 0,
       rotate: '0deg',
       cellSize: 50,
-      
 
       gameResult: '',
       playerMsg: 'Battle Ship',
@@ -197,12 +212,12 @@ export default {
 
       gridSize: 6,
       repositionButton: true,
-      backgroundSound: "War.mp3"
+      backgroundSound: 'War.mp3'
     }
   },
   methods: {
     playAgain() {
-      this.backgroundSound = "War.mp3"
+      this.backgroundSound = 'War.mp3'
       this.gameOver = false
       // document.getElementById("gameOverWindow").style.visibility="hidden"
       this.refresh()
@@ -240,23 +255,21 @@ export default {
       }
     },
     play() {
-      var a = this.$refs.audioElm;
-      if (this.backgroundSound!== null) {
-        a.play();
-      } 
+      var a = this.$refs.audioElm
+      if (this.backgroundSound !== null) {
+        a.play()
+      }
     },
     fire(arrayShips) {
-      
       // const warSound = new Audio ("War.mp3")
       // if (this.baseOneAllShotCells.length === 0){
       //   warSound.play()
-        
-      // } 
-     
+
+      // }
+
       this.play()
-     
-     
-      const bombSound = new Audio ("bombSound.wav")
+
+      const bombSound = new Audio('bombSound.wav')
       bombSound.play()
       // initialization 👇🏾
       let out = true
@@ -422,12 +435,12 @@ export default {
     changeImgPosition() {
       this.imgPositionX = this.imgPositionX - 50
     },
-    reposition(){
-      this.repositionButton=false
-     this.playAgain()
-    setTimeout(() => {
-      this.repositionButton=true
-    }, 500);
+    reposition() {
+      this.repositionButton = false
+      this.playAgain()
+      setTimeout(() => {
+        this.repositionButton = true
+      }, 500)
     },
     refresh() {
       this.baseOneShips = [] //position of ships
@@ -530,14 +543,14 @@ export default {
       }
     },
     isGameOver() {
-      const gameOver = this.baseOneShips.length === this.baseOneSank ||
+      const gameOver =
+        this.baseOneShips.length === this.baseOneSank ||
         this.baseTwoShips.length === this.baseTwoSank
-       
-        if (gameOver) {
-          this.gameOver = true
-          this.backgroundSound = null
-          
-        }
+
+      if (gameOver) {
+        this.gameOver = true
+        this.backgroundSound = null
+      }
       return gameOver
     },
     isHit(row_index, col_index, arrayShips) {
@@ -759,16 +772,13 @@ export default {
     }
   },
   mounted() {
-    
     this.positionShips('baseOne', this.baseOneShips)
     this.positionShips('baseTwo', this.baseTwoShips)
   }
 }
-
 </script>
 <style scoped>
-
-.headers{
+.headers {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -821,7 +831,6 @@ template {
   .battleAreaContainer {
     flex-direction: column;
     justify-content: center;
-  
   }
 }
 
@@ -833,12 +842,7 @@ template {
 
 @media (min-width: 1024px) {
   .battleAreaContainer {
-  
-  flex-direction: row;
- 
+    flex-direction: row;
   }
 }
-
-
-
 </style>

@@ -1,16 +1,24 @@
 <template>
-  <!-- <app-table @click-box="clickBox" :tableRow="row" :tableCol="col"></app-table> -->
-  <app-table></app-table>
+ 
+  <user-credentials v-if="userCredentials === true"></user-credentials>
+ 
+
 </template>
 
 <script>
-import AppTable from './components/AppTable.vue'
 
+import UserCredentials from './components/UserCredentials.vue'
 
 export default {
   name: 'App',
   components: {
-    AppTable
+    UserCredentials
+  },
+  data (){
+    return {
+      userCredentials: true,
+      
+    }
   }
 }
 </script>
