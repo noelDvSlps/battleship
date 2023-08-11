@@ -72,10 +72,10 @@
         <p>{{ this.pcMsg }}</p>
         <p>{{ this.baseOneSank }} of your {{ this.baseOneShips.length }} ships sank!</p>
         <div name="table-container" :style="{'position': 'absolute', 'top': this.tableTop + 'px' }">
-          <table id="baseOne" :style="{'background': 'transparent', 'width': this.tableWidth +'px' }">
+          <table id="baseOne" :style="{'background': 'transparent', 'width': this.tableWidth +'px' }" >
             <tr v-for="row_index in this.gridSize" :key="row_index">
               <td class = "sm" :style="cssVars"
-                style="border: 1px dashed"
+                style="border: 1px dashed red"
                 :id="`baseOne-${row_index}-${col_index}`"
                 v-for="col_index in this.gridSize"
                 :key="col_index"
@@ -85,7 +85,7 @@
             </tr>
           </table>
 
-          <table id="baseOneBackLayer" :style="cssBackLayerBase()">
+          <table id="baseOneBackLayer" :style="cssBackLayerBase()" >
             <tr v-for="row_index in this.gridSize" :key="row_index">
               <td
               class = "sm" :style="cssVars"
@@ -103,8 +103,8 @@
         <p>{{ this.playerMsg }}</p>
         <p>{{ this.baseTwoSank }} of PC's {{ this.baseTwoShips.length }} ships sank!</p>
         <div name="table-container" :style="{'position': 'absolute', 'top': this.tableTop + 'px' }">
-          <table id="baseTwo" style="background: transparent; height: 360px;">
-            <tr v-for="row_index in this.gridSize" :key="row_index">
+          <table id="baseTwo" style="background: transparent; height: 100%; " >
+            <tr  v-for="row_index in this.gridSize" :key="row_index">
               <td
               class = "sm" :style="cssVars"
                 style="border: 1px dashed"
@@ -123,13 +123,15 @@
                   )
                 "
               >
-                <div style="width: 100%; height: 100%" :name="`baseTwo-${row_index}-${col_index}`">
+                <div style="width: 100%; height: 100%; position: relative;" :name="`baseTwo-${row_index}-${col_index}`">
                   <img
+                    style="position: absolute; left: 0;"
                     :style="cssTd(row_index, col_index)"
                     :src="cssSrc()"
                     alt=""
                     :name="`baseTwo-${row_index}-${col_index}`"
                     v-if="findUnit([row_index, col_index], [baseTwoAllShotCells]) === false"
+                    
                   />
                   <div
                     v-if="
@@ -152,7 +154,7 @@
             </tr>
           </table>
 
-          <table id="baseTwoBackLayer" :style="cssBackLayerBase()">
+          <table id="baseTwoBackLayer" :style="cssBackLayerBase()" >
             <tr v-for="row_index in this.gridSize" :key="row_index">
               <td
               class = "sm" :style="cssVars"
@@ -415,6 +417,8 @@ export default {
         bombTop = bombTop + (ref.cellSize/2)
         console.log("row", bombTop)
         if (bombTop >= ref.tableTop + (ref.cellSize * (row-1))) {
+          bombTop = ref.tableTop + (ref.cellSize * (row-1))
+          
           bomb.style.top = `${bombTop}px`
           clearInterval(timer) // finish the animation after 2 seconds
           
@@ -437,7 +441,6 @@ export default {
         'background-image': `url(${this.baseImage})`,
         top: 0,
         left: 0,
-        height: '360px'
       }
     },
     cssSrc() {
