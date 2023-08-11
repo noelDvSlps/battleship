@@ -8,7 +8,7 @@ body {
 #app {
   max-width: 1280px;
   font-weight: normal;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 a,

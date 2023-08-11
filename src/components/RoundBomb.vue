@@ -12,11 +12,11 @@
 .bomb {
   position: absolute;
   visibility: hidden;
-  width: 50px;
-  height: 50px;
+  width: 75px;
+  height: 75px;
   border-radius: 50%;
   top: 0px;
-  left: 520px;
+  left: 0px;
   z-index: 10;
 }
 </style>

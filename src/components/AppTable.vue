@@ -1,5 +1,11 @@
 <template class="template-class">
   <!-- <button v-on:click="play" type="button">Click Me to Toggle Sound</button> -->
+  <label for="">Level</label>
+  <select v-if="this.baseOneAllShotCells.length === 0 && this.repositionButton === true" @change="changeLevel($event)" name="level" id="level" style="margin-left: 20px;">
+  <option  value="easy" selected >Easy</option>
+  <option value="medium">Medium</option>
+  <option value="hard">Hard</option>
+</select>
   <audio loop ref="audioElm" :src="this.backgroundSound"></audio>
   <div id="main" class="main">
     <div
@@ -47,10 +53,11 @@
     <h1>BATTLESHIP</h1>
     <h2>SCORE: {{ this.score }}</h2>
 
-    <div id="battleAreaContainer" class="battleAreaContainer" style="position: relative">
-      <RoundBomb v-for="index in 10" :key="index" :id="'bomb' + index"></RoundBomb>
+    <div id="battleAreaContainer" class="battleAreaContainer" >
+      
 
-      <div name="baseOne-container">
+      <div name="baseOne-container" :style="{'position': 'relative', 'width': this.tableWidth + 'px', 'height': '600px'}  ">
+        <RoundBomb  :style="{'width': this.cellSize + 'px', 'height': this.cellSize + 'px' } " v-for="index in 10" :key="index" :id="'bomb' + index"></RoundBomb>
         <div>
           <h1 style="display: inline">YOUR BASE</h1>
           <button
@@ -64,10 +71,10 @@
 
         <p>{{ this.pcMsg }}</p>
         <p>{{ this.baseOneSank }} of your {{ this.baseOneShips.length }} ships sank!</p>
-        <div name="table-container" style="position: relative">
-          <table id="baseOne" style="background: transparent">
+        <div name="table-container" :style="{'position': 'absolute', 'top': this.tableTop + 'px' }">
+          <table id="baseOne" :style="{'background': 'transparent', 'width': this.tableWidth +'px' }">
             <tr v-for="row_index in this.gridSize" :key="row_index">
-              <td
+              <td class = "sm" :style="cssVars"
                 style="border: 1px dashed"
                 :id="`baseOne-${row_index}-${col_index}`"
                 v-for="col_index in this.gridSize"
@@ -81,6 +88,7 @@
           <table id="baseOneBackLayer" :style="cssBackLayerBase()">
             <tr v-for="row_index in this.gridSize" :key="row_index">
               <td
+              class = "sm" :style="cssVars"
                 :id="`baseOneCell-${row_index}-${col_index}`"
                 v-for="col_index in this.gridSize"
                 :key="col_index"
@@ -90,14 +98,15 @@
         </div>
       </div>
 
-      <div id="baseTwo-container" name="baseTwo-container">
+      <div id="baseTwo-container" name="baseTwo-container" :style="{'position': 'relative', 'width': this.tableWidth + 'px', 'height': '600px'}  ">
         <h1>PC Base (Click 👇🏾)</h1>
         <p>{{ this.playerMsg }}</p>
         <p>{{ this.baseTwoSank }} of PC's {{ this.baseTwoShips.length }} ships sank!</p>
-        <div name="table-container" style="position: relative">
+        <div name="table-container" :style="{'position': 'absolute', 'top': this.tableTop + 'px' }">
           <table id="baseTwo" style="background: transparent">
             <tr v-for="row_index in this.gridSize" :key="row_index">
               <td
+              class = "sm" :style="cssVars"
                 style="border: 1px dashed"
                 :name="`baseTwo-${row_index}-${col_index}`"
                 :id="`baseTwo-${row_index}-${col_index}`"
@@ -146,6 +155,7 @@
           <table id="baseTwoBackLayer" :style="cssBackLayerBase()">
             <tr v-for="row_index in this.gridSize" :key="row_index">
               <td
+              class = "sm" :style="cssVars"
                 :id="`baseTwoCell-${row_index}-${col_index}`"
                 v-for="col_index in this.gridSize"
                 :key="col_index"
@@ -167,6 +177,8 @@ export default {
   },
   data() {
     return {
+      tableWidth: 480,
+      level: 'easy',
       symbol: '❌',
       clicked: false,
       validClick: true,
@@ -180,7 +192,8 @@ export default {
       imgPositionX: 0,
       imgPositionY: 0,
       rotate: '0deg',
-      cellSize: 50,
+      cellSize: 80,
+      tableTop: 100,
 
       gameResult: '',
       playerMsg: 'Battle Ship',
@@ -216,6 +229,32 @@ export default {
     }
   },
   methods: {
+    changeLevel(event){
+      this.clearTable()
+     this.changeGridSize(event)
+     setTimeout(()=>{
+      this.playAgain()
+     }, 500)
+    
+
+      
+    },
+    changeGridSize (event) {
+      if(event.target.value === "easy") {
+        this.gridSize = 6
+        this.cellSize = this.tableWidth/6
+      }
+
+      if(event.target.value === "medium") {
+        this.gridSize = 9
+        this.cellSize = this.tableWidth/ 9
+      }
+
+      if(event.target.value === "hard") {
+        this.gridSize = 12
+        this.cellSize = this.tableWidth/ 12
+      }
+    },
     playAgain() {
       this.backgroundSound = 'War.mp3'
       this.gameOver = false
@@ -261,6 +300,7 @@ export default {
       }
     },
     fire(arrayShips) {
+      const ref = this
       // const warSound = new Audio ("War.mp3")
       // if (this.baseOneAllShotCells.length === 0){
       //   warSound.play()
@@ -366,16 +406,18 @@ export default {
       }
 
       bomb.style.top = `${bombTop}px`
-      bomb.style.left = `${50 * col - 50}px`
+      bomb.style.left = `${ref.cellSize * col - ref.cellSize}px`
       bomb.style.visibility = 'visible'
 
       let timer = setInterval(function () {
         // how much time passed from the start?
 
-        bombTop = bombTop + 10
-
-        if (bombTop >= 50 + 50 * row) {
+        bombTop = bombTop + (ref.cellSize/2)
+        console.log("row", bombTop)
+        if (bombTop >= ref.tableTop + (ref.cellSize * (row-1))) {
+          bomb.style.top = `${bombTop}px`
           clearInterval(timer) // finish the animation after 2 seconds
+          
           setTimeout(() => {
             bomb.style.visibility = 'hidden'
           }, 3000)
@@ -409,7 +451,7 @@ export default {
     },
     cssTd(r, c) {
       return {
-        'object-position': `${this.cellSize - c * 50}px ${this.cellSize - r * 50 - 0.5}px`,
+        'object-position': `${this.cellSize - c * this.cellSize}px ${this.cellSize - r * this.cellSize}px`,
         width: '100%',
         height: '100%',
         'object-fit': 'none',
@@ -433,7 +475,7 @@ export default {
       }
     },
     changeImgPosition() {
-      this.imgPositionX = this.imgPositionX - 50
+      this.imgPositionX = this.imgPositionX - this.cellSize
     },
     reposition() {
       this.repositionButton = false
@@ -615,16 +657,16 @@ export default {
           this.rotate = '180deg'
         }
         if (shipDirection === 'down') {
-          this.top = this.cellSize * arrayShip[0][0] - this.cellSize + (arrayShip.length - 1) * 25
-          this.left = this.cellSize * arrayShip[0][1] - this.cellSize - (arrayShip.length - 1) * 25
+          this.top = this.cellSize * arrayShip[0][0] - this.cellSize + (arrayShip.length - 1) * (this.cellSize/2)
+          this.left = this.cellSize * arrayShip[0][1] - this.cellSize - (arrayShip.length - 1) * (this.cellSize/2)
           this.rotate = '90deg'
         }
         if (shipDirection === 'up') {
           this.top =
             this.cellSize * arrayShip[0][0] -
             this.cellSize * arrayShip.length +
-            (arrayShip.length - 1) * 25
-          this.left = this.cellSize * arrayShip[0][1] - this.cellSize - (arrayShip.length - 1) * 25
+            (arrayShip.length - 1) * (this.cellSize/2)
+          this.left = this.cellSize * arrayShip[0][1] - this.cellSize - (arrayShip.length - 1) * (this.cellSize/2)
           this.rotate = '270deg'
         }
         // here
@@ -772,10 +814,19 @@ export default {
     }
   },
   mounted() {
+    // this.cellSize = this.tableWidth / 6
     this.positionShips('baseOne', this.baseOneShips)
     this.positionShips('baseTwo', this.baseTwoShips)
+  },
+  computed: {
+    cssVars () {
+      return {
+        '--cellSize': `${this.cellSize}px`
+      }
+    }
   }
 }
+
 </script>
 <style scoped>
 .headers {
@@ -790,15 +841,19 @@ export default {
 td {
   text-align: center;
   border: 1px dashed;
-  height: 50px;
-  width: 50px;
-  min-height: 50px;
-  max-height: 50px;
-  min-width: 50px;
-  max-width: 50px;
   padding: 0;
   background: transparent;
   user-select: none;
+}
+
+.sm {
+  width: var(--cellSize);
+  height: var(--cellSize);
+  min-width: var(--cellSize);
+  min-height: var(--cellSize);
+  max-height: var(--cellSize);
+  max-width: var(--cellSize);
+  
 }
 table {
   border-collapse: collapse;

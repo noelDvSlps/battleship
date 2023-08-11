@@ -1,5 +1,5 @@
 <template class="template-class">
-  <form v-if="appTable === false" action="" style="display: flex; flex-direction: column">
+  <div  v-if="appTable === false" action="" style="display: flex; flex-direction: column">
     <label for="">Username</label>
     <input value="Just click Sign In"  id="username" type="text" />
     <label for="">Password</label>
@@ -9,8 +9,8 @@
       <input id="confirmPassword" type="password" />
     </div>
     <button @click = "successLogin" style="margin-top: 20px">Sign In</button>
-  </form>
-  <app-table v-if="appTable === true" @click-box="clickBox" :tableRow="row" :tableCol="col"></app-table>
+  </div>
+  <app-table v-if="appTable === true"  ></app-table>
 
 </template>
 <script>
