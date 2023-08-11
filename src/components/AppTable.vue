@@ -56,7 +56,7 @@
     <div id="battleAreaContainer" class="battleAreaContainer" >
       
 
-      <div name="baseOne-container" :style="{'position': 'relative', 'width': this.tableWidth + 'px', 'height': '600px'}  ">
+      <div name="baseOne-container" :style="{'position': 'relative', 'width': this.tableWidth + 'px', 'height': '500px'}  ">
         <RoundBomb  :style="{'width': this.cellSize + 'px', 'height': this.cellSize + 'px' } " v-for="index in 10" :key="index" :id="'bomb' + index"></RoundBomb>
         <div>
           <h1 style="display: inline">YOUR BASE</h1>
@@ -98,12 +98,12 @@
         </div>
       </div>
 
-      <div id="baseTwo-container" name="baseTwo-container" :style="{'position': 'relative', 'width': this.tableWidth + 'px', 'height': '600px'}  ">
+      <div id="baseTwo-container" name="baseTwo-container" :style="{'position': 'relative', 'width': this.tableWidth + 'px', 'height': '500px'}  ">
         <h1>PC Base (Click 👇🏾)</h1>
         <p>{{ this.playerMsg }}</p>
         <p>{{ this.baseTwoSank }} of PC's {{ this.baseTwoShips.length }} ships sank!</p>
         <div name="table-container" :style="{'position': 'absolute', 'top': this.tableTop + 'px' }">
-          <table id="baseTwo" style="background: transparent">
+          <table id="baseTwo" style="background: transparent; height: 360px;">
             <tr v-for="row_index in this.gridSize" :key="row_index">
               <td
               class = "sm" :style="cssVars"
@@ -177,7 +177,7 @@ export default {
   },
   data() {
     return {
-      tableWidth: 480,
+      tableWidth: 330,
       level: 'easy',
       symbol: '❌',
       clicked: false,
@@ -192,7 +192,7 @@ export default {
       imgPositionX: 0,
       imgPositionY: 0,
       rotate: '0deg',
-      cellSize: 80,
+      cellSize: 55,
       tableTop: 100,
 
       gameResult: '',
@@ -436,7 +436,8 @@ export default {
         'z-index': -1,
         'background-image': `url(${this.baseImage})`,
         top: 0,
-        left: 0
+        left: 0,
+        height: '360px'
       }
     },
     cssSrc() {
