@@ -1,15 +1,39 @@
 <template class="template-class">
-  <!-- <button v-on:click="play" type="button">Click Me to Toggle Sound</button> -->
-  <label for="">Level</label>
-  <select v-if="this.baseOneAllShotCells.length === 0 && this.repositionButton === true" @change="changeLevel($event)" name="level" id="level" style="margin-left: 20px;">
-  <option  value="easy" selected >Easy</option>
-  <option value="medium">Medium</option>
-  <option value="hard">Hard</option>
-</select>
+  <div style="position: relative">
+    <span class="green">BATTLESHIP </span>
+    <span class="green" style="position: absolute; right: 0">SCORE: {{ this.score }}</span>
+  </div>
+  <div id="navBar" style="position: relative">
+    <a @click="showTopTen">Top Ten </a>
+    <span v-if="this.gameOver === true">| <a @click="playAgain">PLAY AGAIN</a> | </span>
+    <a @click="quitBattleship" style="position: absolute; right: 0">LOG OUT</a>
+  </div>
+
+  <div>
+    Hi, {{ props.userInfo.username }}!
+    <div v-if="this.baseOneAllShotCells.length === 0" style="display: inline">
+      <label for="">SELECT LEVEL</label>
+      <select @change="changeLevel($event)" name="level" id="level" style="margin-left: 20px">
+        <option
+          v-for="difficulty in props.difficulties"
+          :key="difficulty"
+          :value="JSON.stringify(difficulty)"
+          :selected="isSelected(difficulty.id)"
+        >
+          {{ difficulty.difficulty }}
+        </option>
+
+        <!-- <option value="easy" :selected = isSelected(1) >Easy</option>
+        <option value="medium" :selected = isSelected(2)>Medium</option>
+        <option value="hard" :selected = isSelected(3)>Hard</option> -->
+      </select>
+    </div>
+  </div>
+
   <audio loop ref="audioElm" :src="this.backgroundSound"></audio>
   <div id="main" class="main">
     <div
-      v-if="gameOver === true"
+      v-if="gameOverWindow === true"
       id="gameOverWindow"
       style="
         position: absolute;
@@ -45,21 +69,28 @@
           <button style="width: 150px; height: 35px; border-radius: 8px" @click="playAgain">
             PLAY AGAIN
           </button>
-          <button style="width: 150px; height: 35px; border-radius: 8px" @click="quit">QUIT</button>
+          <button
+            style="width: 150px; height: 35px; border-radius: 8px"
+            @click="this.gameOverWindow = false"
+          >
+            Exit
+          </button>
         </div>
       </div>
     </div>
-
-    <h1>BATTLESHIP</h1>
-    <h2>SCORE: {{ this.score }}</h2>
-
-    <div id="battleAreaContainer" class="battleAreaContainer" >
-      
-
-      <div name="baseOne-container" :style="{'position': 'relative', 'width': this.tableWidth + 'px', 'height': '500px'}  ">
-        <RoundBomb  :style="{'width': this.cellSize + 'px', 'height': this.cellSize + 'px' } " v-for="index in 10" :key="index" :id="'bomb' + index"></RoundBomb>
+    <div id="battleAreaContainer" class="battleAreaContainer">
+      <div
+        name="baseOne-container"
+        :style="{ position: 'relative', width: this.tableWidth + 'px', height: '500px' }"
+      >
+        <RoundBomb
+          :style="{ width: this.cellSize + 'px', height: this.cellSize + 'px' }"
+          v-for="index in 10"
+          :key="index"
+          :id="'bomb' + index"
+        ></RoundBomb>
         <div>
-          <h1 style="display: inline">YOUR BASE</h1>
+          <h3 style="display: inline">YOUR BASE</h3>
           <button
             v-if="this.baseOneAllShotCells.length === 0 && this.repositionButton === true"
             @click="this.reposition()"
@@ -71,10 +102,12 @@
 
         <p>{{ this.pcMsg }}</p>
         <p>{{ this.baseOneSank }} of your {{ this.baseOneShips.length }} ships sank!</p>
-        <div name="table-container" :style="{'position': 'absolute', 'top': this.tableTop + 'px' }">
-          <table id="baseOne" :style="{'background': 'transparent', 'width': this.tableWidth +'px' }" >
+        <div name="table-container" :style="{ position: 'absolute', top: this.tableTop + 'px' }">
+          <table id="baseOne" :style="{ background: 'transparent', width: this.tableWidth + 'px' }">
             <tr v-for="row_index in this.gridSize" :key="row_index">
-              <td class = "sm" :style="cssVars"
+              <td
+                class="sm"
+                :style="cssVars"
                 style="border: 1px dashed red"
                 :id="`baseOne-${row_index}-${col_index}`"
                 v-for="col_index in this.gridSize"
@@ -85,10 +118,11 @@
             </tr>
           </table>
 
-          <table id="baseOneBackLayer" :style="cssBackLayerBase()" >
+          <table id="baseOneBackLayer" :style="cssBackLayerBase()">
             <tr v-for="row_index in this.gridSize" :key="row_index">
               <td
-              class = "sm" :style="cssVars"
+                class="sm"
+                :style="cssVars"
                 :id="`baseOneCell-${row_index}-${col_index}`"
                 v-for="col_index in this.gridSize"
                 :key="col_index"
@@ -98,15 +132,20 @@
         </div>
       </div>
 
-      <div id="baseTwo-container" name="baseTwo-container" :style="{'position': 'relative', 'width': this.tableWidth + 'px', 'height': '500px'}  ">
-        <h1>PC Base (Click 👇🏾)</h1>
+      <div
+        id="baseTwo-container"
+        name="baseTwo-container"
+        :style="{ position: 'relative', width: this.tableWidth + 'px', height: '500px' }"
+      >
+        <h3>PC Base (Click 👇🏾)</h3>
         <p>{{ this.playerMsg }}</p>
         <p>{{ this.baseTwoSank }} of PC's {{ this.baseTwoShips.length }} ships sank!</p>
-        <div name="table-container" :style="{'position': 'absolute', 'top': this.tableTop + 'px' }">
-          <table id="baseTwo" style="background: transparent; height: 100%; " >
-            <tr  v-for="row_index in this.gridSize" :key="row_index">
+        <div name="table-container" :style="{ position: 'absolute', top: this.tableTop + 'px' }">
+          <table id="baseTwo" style="background: transparent; height: 100%">
+            <tr v-for="row_index in this.gridSize" :key="row_index">
               <td
-              class = "sm" :style="cssVars"
+                class="sm"
+                :style="cssVars"
                 style="border: 1px dashed"
                 :name="`baseTwo-${row_index}-${col_index}`"
                 :id="`baseTwo-${row_index}-${col_index}`"
@@ -123,15 +162,20 @@
                   )
                 "
               >
-                <div style="width: 100%; height: 100%; position: relative;" :name="`baseTwo-${row_index}-${col_index}`">
+                <div
+                  style="width: 100%; height: 100%; position: relative"
+                  :name="`baseTwo-${row_index}-${col_index}`"
+                >
                   <img
-                    style="position: absolute; left: 0;"
-                    :style="cssTd(row_index, col_index)"
+                    style="position: absolute; left: 0"
+                    :style="{
+                      ...cssTd(row_index, col_index),
+                      visibility: this.gameOver ? 'hidden' : 'visible'
+                    }"
                     :src="cssSrc()"
                     alt=""
                     :name="`baseTwo-${row_index}-${col_index}`"
                     v-if="findUnit([row_index, col_index], [baseTwoAllShotCells]) === false"
-                    
                   />
                   <div
                     v-if="
@@ -154,10 +198,11 @@
             </tr>
           </table>
 
-          <table id="baseTwoBackLayer" :style="cssBackLayerBase()" >
+          <table id="baseTwoBackLayer" :style="cssBackLayerBase()">
             <tr v-for="row_index in this.gridSize" :key="row_index">
               <td
-              class = "sm" :style="cssVars"
+                class="sm"
+                :style="cssVars"
                 :id="`baseTwoCell-${row_index}-${col_index}`"
                 v-for="col_index in this.gridSize"
                 :key="col_index"
@@ -171,14 +216,17 @@
 </template>
 <script>
 import RoundBomb from './RoundBomb.vue'
-
 export default {
+  emits: ['show-top-ten', 'quit-battleship'],
+  props: ['props'],
   name: 'AppTable',
   components: {
     RoundBomb
   },
   data() {
     return {
+      gameOverWindow: false,
+      difficulty: 1,
       tableWidth: 330,
       level: 'easy',
       symbol: '❌',
@@ -188,7 +236,6 @@ export default {
       score: 0,
       nextFire: [],
       shipDirection: '',
-      setTime: 0,
       baseImage:
         'https://c8.alamy.com/comp/2H2PRC8/beautiful-ocean-waves-top-down-view-from-drone-aerial-background-landscape-of-water-texture-2H2PRC8.jpg',
       imgPositionX: 0,
@@ -231,36 +278,48 @@ export default {
     }
   },
   methods: {
-    changeLevel(event){
-      this.clearTable()
-     this.changeGridSize(event)
-     setTimeout(()=>{
-      this.playAgain()
-     }, 500)
-    
-
-      
+    isSelected(difficulty) {
+      return difficulty === this.difficulty
     },
-    changeGridSize (event) {
-      if(event.target.value === "easy") {
-        this.gridSize = 6
-        this.cellSize = this.tableWidth/6
-      }
+    showTopTen() {
+      this.$emit('show-top-ten')
+    },
+    quitBattleship() {
+      this.$emit('quit-battleship')
+    },
 
-      if(event.target.value === "medium") {
-        this.gridSize = 9
-        this.cellSize = this.tableWidth/ 9
-      }
-
-      if(event.target.value === "hard") {
-        this.gridSize = 12
-        this.cellSize = this.tableWidth/ 12
-      }
+    addUserScore(value, userId, difficultyId) {
+      fetch(this.props.baseURL + '/scores', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        method: 'POST',
+        body: JSON.stringify({ value, userId, difficultyId })
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error('Adding Score failed')
+        }
+        return response.json()
+      })
+    },
+    changeLevel(event) {
+      this.clearTable()
+      this.changeGridSize(event)
+      setTimeout(() => {
+        this.playAgain()
+      }, 500)
+    },
+    changeGridSize(event) {
+      const difficulty = JSON.parse(event.target.value)
+      this.difficulty = difficulty.difficulty
+      this.gridSize = difficulty.gridsize
+      this.cellSize = this.tableWidth / difficulty.gridsize
     },
     playAgain() {
       this.backgroundSound = 'War.mp3'
       this.gameOver = false
-      // document.getElementById("gameOverWindow").style.visibility="hidden"
+      this.gameOverWindow = false
       this.refresh()
       this.clearTable()
       this.positionShips('baseOne', this.baseOneShips)
@@ -273,7 +332,6 @@ export default {
       let counter = 0
       const start = new Date().getTime()
       while (new Date().getTime() - start < milliseconds) {
-        // console.log((new Date().getTime() - start))
         counter = counter + 1
       }
     },
@@ -303,11 +361,6 @@ export default {
     },
     fire(arrayShips) {
       const ref = this
-      // const warSound = new Audio ("War.mp3")
-      // if (this.baseOneAllShotCells.length === 0){
-      //   warSound.play()
-
-      // }
 
       this.play()
 
@@ -323,7 +376,6 @@ export default {
       // initialization 👆🏾
       const damageShip = Object.keys(this.baseOneHits)
       if (damageShip.length > 0) {
-        console.log('There is damage ship')
         let firstKey = Object.keys(this.baseOneHits)[0]
 
         if (this.baseOneHits[firstKey].cells.length === 1) {
@@ -346,10 +398,8 @@ export default {
             } else {
               out = false
             }
-
-            // out = this.outsideGrid2(`${shipDirection}`, row, col, 2, this.gridSize)
             found = this.findUnit([row, col], [this.baseOneAllShotCells])
-            console.log('1', out, found, row, col)
+
             if (counter === 20) {
               out = false
               found = false
@@ -376,9 +426,9 @@ export default {
           } else {
             out = false
           }
-          // out = this.outsideGrid2(`${shipDirection}`, row, col, 2, this.gridSize)
+          
           found = this.findUnit([row, col], [this.baseOneAllShotCells])
-          console.log('2', out, found, row, col)
+
           if (out === true || found === true) {
             this.nextFire = [
               this.baseOneHits[firstKey].cells[0][0] - rowDiff,
@@ -414,14 +464,14 @@ export default {
       let timer = setInterval(function () {
         // how much time passed from the start?
 
-        bombTop = bombTop + (ref.cellSize/2)
-        console.log("row", bombTop)
-        if (bombTop >= ref.tableTop + (ref.cellSize * (row-1))) {
-          bombTop = ref.tableTop + (ref.cellSize * (row-1))
-          
+        bombTop = bombTop + ref.cellSize / 2
+
+        if (bombTop >= ref.tableTop + ref.cellSize * (row - 1)) {
+          bombTop = ref.tableTop + ref.cellSize * (row - 1)
+
           bomb.style.top = `${bombTop}px`
           clearInterval(timer) // finish the animation after 2 seconds
-          
+
           setTimeout(() => {
             bomb.style.visibility = 'hidden'
           }, 3000)
@@ -440,7 +490,7 @@ export default {
         'z-index': -1,
         'background-image': `url(${this.baseImage})`,
         top: 0,
-        left: 0,
+        left: 0
       }
     },
     cssSrc() {
@@ -455,16 +505,15 @@ export default {
     },
     cssTd(r, c) {
       return {
-        'object-position': `${this.cellSize - c * this.cellSize}px ${this.cellSize - r * this.cellSize}px`,
+        'object-position': `${this.cellSize - c * this.cellSize}px ${
+          this.cellSize - r * this.cellSize
+        }px`,
         width: '100%',
         height: '100%',
         'object-fit': 'none',
         'z-index': 10,
         'pointer-events': 'none'
       }
-    },
-    cssTable() {
-      return '2px solid red'
     },
     clearTable() {
       for (let row = 1; row <= this.gridSize; row++) {
@@ -533,7 +582,7 @@ export default {
 
         if (isHit) {
           innerText = '🔥'
-          score = 250
+          score = 250 * this.difficulty
           this.addHitCell(baseHits, [row, col])
           const shipSank = this.isShipSank(baseHits, arrayShips)
           if (shipSank) {
@@ -547,7 +596,7 @@ export default {
         if (!isHit) {
           innerText = '❌'
           msg = 'MISSED'
-          score = -100
+          this.score >= 100 ? (score = -100) : (score = 0)
         }
 
         if (this.playerTurn === true) {
@@ -595,7 +644,9 @@ export default {
 
       if (gameOver) {
         this.gameOver = true
+        this.gameOverWindow = true
         this.backgroundSound = null
+        this.addUserScore(this.score, this.props.userInfo.userId, this.difficulty)
       }
       return gameOver
     },
@@ -661,16 +712,25 @@ export default {
           this.rotate = '180deg'
         }
         if (shipDirection === 'down') {
-          this.top = this.cellSize * arrayShip[0][0] - this.cellSize + (arrayShip.length - 1) * (this.cellSize/2)
-          this.left = this.cellSize * arrayShip[0][1] - this.cellSize - (arrayShip.length - 1) * (this.cellSize/2)
+          this.top =
+            this.cellSize * arrayShip[0][0] -
+            this.cellSize +
+            (arrayShip.length - 1) * (this.cellSize / 2)
+          this.left =
+            this.cellSize * arrayShip[0][1] -
+            this.cellSize -
+            (arrayShip.length - 1) * (this.cellSize / 2)
           this.rotate = '90deg'
         }
         if (shipDirection === 'up') {
           this.top =
             this.cellSize * arrayShip[0][0] -
             this.cellSize * arrayShip.length +
-            (arrayShip.length - 1) * (this.cellSize/2)
-          this.left = this.cellSize * arrayShip[0][1] - this.cellSize - (arrayShip.length - 1) * (this.cellSize/2)
+            (arrayShip.length - 1) * (this.cellSize / 2)
+          this.left =
+            this.cellSize * arrayShip[0][1] -
+            this.cellSize -
+            (arrayShip.length - 1) * (this.cellSize / 2)
           this.rotate = '270deg'
         }
         // here
@@ -786,7 +846,6 @@ export default {
     getNextUnit(shipDirection, row, col, difference) {
       switch (shipDirection) {
         case 'up':
-          // return GetRowLetter(row - difference) + col
           return [row - difference, col]
         case 'down':
           return [row + difference, col]
@@ -818,19 +877,17 @@ export default {
     }
   },
   mounted() {
-    // this.cellSize = this.tableWidth / 6
     this.positionShips('baseOne', this.baseOneShips)
     this.positionShips('baseTwo', this.baseTwoShips)
   },
   computed: {
-    cssVars () {
+    cssVars() {
       return {
         '--cellSize': `${this.cellSize}px`
       }
     }
   }
 }
-
 </script>
 <style scoped>
 .headers {
@@ -857,7 +914,6 @@ td {
   min-height: var(--cellSize);
   max-height: var(--cellSize);
   max-width: var(--cellSize);
-  
 }
 table {
   border-collapse: collapse;

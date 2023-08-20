@@ -1,24 +1,95 @@
 <template>
- 
-  <user-credentials v-if="userCredentials === true"></user-credentials>
- 
+  <div id="main-container">
+    <user-credentials
+      @get-user-info="getUserInfo"
+      v-if="windows.logIn === true"
+      :props="{ baseURL: this.baseURL }"
+    ></user-credentials>
 
+    <top-ten
+      :props="{ baseURL: this.baseURL, difficulties: this.difficulties }"
+      v-if="windows.topTen === true"
+      @exit-top-ten="windows.topTen = false"
+    >
+    </top-ten>
+
+    <app-table
+      v-if="windows.playground === true"
+      :props="{ userInfo: this.userInfo, baseURL: this.baseURL, difficulties: this.difficulties }"
+      @show-top-ten="windows.topTen = true"
+      @quit-battleship="quitBattleship"
+    ></app-table>
+  </div>
 </template>
 
 <script>
-
 import UserCredentials from './components/UserCredentials.vue'
-
+import TopTen from './components/TopTen.vue'
+import AppTable from './components/AppTable.vue'
 export default {
   name: 'App',
   components: {
-    UserCredentials
+    UserCredentials,
+    TopTen,
+    AppTable
   },
-  data (){
+
+  data() {
     return {
-      userCredentials: true,
-      
+      windows: {
+        logIn: true,
+        playground: false,
+        topTen: false,
+        gameOver: false
+      },
+      difficulties: [],
+      baseURL: 'http://localhost:3000',
+      userInfo: {},
+      loginSuccess: false
+    }
+  },
+  async mounted() {
+    this.difficulties = await this.getDifficulties()
+    const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
+    if (maybeUser) {
+      this.userInfo = maybeUser
+      this.windows.logIn = false
+      this.windows.playground = true
+    }
+  },
+  methods: {
+    getUserInfo(userInfo) {
+      this.userInfo = userInfo
+      this.loginSuccessful()
+    },
+    loginSuccessful() {
+      this.loginSuccess = true
+      this.windows.logIn = false
+      this.windows.playground = true
+    },
+    quitBattleship() {
+      localStorage.clear()
+      this.windows.logIn = true
+      this.windows.playground = false
+    },
+    getDifficulties() {
+      return fetch(this.baseURL + '/difficulties').then((response) => {
+        if (!response.ok) {
+          throw new Error('could not get difficulties')
+        }
+        return response.json()
+      })
+      // .then (response => {
+      //   console.log(response)
+      //   return (response)
+      // })
     }
   }
 }
 </script>
+<style scoped>
+#main-container {
+  position: relative;
+  z-index: 100;
+}
+</style>
