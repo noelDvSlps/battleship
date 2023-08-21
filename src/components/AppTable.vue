@@ -311,8 +311,9 @@ export default {
       }, 500)
     },
     changeGridSize(event) {
+      
       const difficulty = JSON.parse(event.target.value)
-      this.difficulty = difficulty.difficulty
+      this.difficulty = difficulty.id
       this.gridSize = difficulty.gridsize
       this.cellSize = this.tableWidth / difficulty.gridsize
     },
@@ -582,7 +583,7 @@ export default {
 
         if (isHit) {
           innerText = '🔥'
-          score = 250 * this.difficulty
+          score = 250 * Number(this.difficulty)
           this.addHitCell(baseHits, [row, col])
           const shipSank = this.isShipSank(baseHits, arrayShips)
           if (shipSank) {
@@ -596,7 +597,7 @@ export default {
         if (!isHit) {
           innerText = '❌'
           msg = 'MISSED'
-          this.score >= 100 ? (score = -100) : (score = 0)
+          this.score >= 100 ? (score =-100) : (score = 0)
         }
 
         if (this.playerTurn === true) {
