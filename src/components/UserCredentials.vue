@@ -74,7 +74,7 @@ export default {
         alert('password not the same')
         return
       }
-      fetch(this.props.baseURL + '/users', {
+      fetch(this.props.baseURL + '/users/register', {
         headers: {
           'Content-Type': 'application/json'
         },
