@@ -311,7 +311,7 @@ export default {
       }, 500)
     },
     changeGridSize(event) {
-      
+
       const difficulty = JSON.parse(event.target.value)
       this.difficulty = difficulty.id
       this.gridSize = difficulty.gridsize
@@ -427,7 +427,7 @@ export default {
           } else {
             out = false
           }
-          
+
           found = this.findUnit([row, col], [this.baseOneAllShotCells])
 
           if (out === true || found === true) {
@@ -597,7 +597,7 @@ export default {
         if (!isHit) {
           innerText = '❌'
           msg = 'MISSED'
-          this.score >= 100 ? (score =-100) : (score = 0)
+          this.score >= 100 ? (score = -100) : (score = 0)
         }
 
         if (this.playerTurn === true) {

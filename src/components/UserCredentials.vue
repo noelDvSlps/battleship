@@ -47,14 +47,13 @@ export default {
       this.signInWindow = !this.signInWindow
     },
     signInOrSignUp() {
-      // 👇🏾 you need to wait two second for the process to continue / also prevents twice form submission
+      // 👇🏾 you need to wait two second to invoke this function again / also prevents twice form submission
       const newTimeStamp = this.getTimestampInSeconds()
       if (newTimeStamp - this.timeStamp < 2) {
-        console.log('submitted twice!')
         return
       }
       this.timeStamp = newTimeStamp
-      // 👆🏾 you need to wait two second for the process to continue / also prevents twice form submission
+      // 👆🏾 you need to wait two second to invoke this function again / also prevents twice form submission
 
       const username = this.username
       const password = this.password
@@ -89,7 +88,6 @@ export default {
         }).then(async (response) => {
           const json_response = await response.json()
         if(!response.ok) {
-            console.log(json_response[0])
             const isArray = (Array.isArray(json_response))
           //if it is an array, there is an error
           if (isArray) {
