@@ -25,6 +25,13 @@
             id="level"
             style="margin-left: 20px"
           >
+          <option
+          key = "all"
+          :value="JSON.stringify(this.showAll)"
+          :selected="this.isItDefault(this.showAll.id)"
+          >
+            {{this.showAll.difficulty}}
+          </option>
             <option
               v-for="difficulty in props.difficulties"
               :key="difficulty"
@@ -63,19 +70,20 @@ export default {
     return {
       rank: 0,
       topten: {},
-      users: {}
+      users: {},
+      showAll: {"id": 0, "difficulty": "All"}
     }
   },
   methods: {
     isItDefault(Id) {
-      return Id === 1
+      return Id === 0
     },
     onClickExit() {
       this.$emit('exit-top-ten')
     },
     getScores(level) {
-      let parsed_difficulty = JSON.parse(level)
-      const query = `?level=${parsed_difficulty.id}`
+      const parsed_difficulty = JSON.parse(level)
+      const query = parsed_difficulty.id === 0 ? "" : `?level=${parsed_difficulty.id}`
       return fetch(this.props.baseURL + `/scores${query}`)
         .then((response) => {
           if (!response.ok) {
@@ -91,7 +99,7 @@ export default {
   },
 
   mounted() {
-    this.getScores(JSON.stringify(this.props.difficulties[0]))
+    this.getScores(JSON.stringify(this.showAll))
   }
 }
 </script>
