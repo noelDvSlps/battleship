@@ -126,8 +126,17 @@ export default {
           this.getUserInfo(response.userInformation)
           localStorage.setItem('token', response.token)
           localStorage.setItem('userInformation', JSON.stringify(response.userInformation))
+          this.$router.push("/battleground")
         })
     }
+  },
+  mounted() {
+    const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
+    if (maybeUser) {
+      this.userInfo = maybeUser
+      this.$router.push("/battleground")
+    }
+   
   }
 }
 </script>

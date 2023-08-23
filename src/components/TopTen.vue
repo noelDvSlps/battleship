@@ -1,5 +1,5 @@
 <template class="template-class">
-  <div id="top-ten-container" class="prevent-select">
+  <div id="top-ten-container" class="prevent-select" style="position: absolute; top: 30px">
     <table
       style="
         width: 100%;

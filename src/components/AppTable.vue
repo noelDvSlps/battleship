@@ -286,9 +286,17 @@ export default {
     },
     quitBattleship() {
       this.$emit('quit-battleship')
+      this.$router.push("/")
     },
 
     addUserScore(value, userId, difficultyId) {
+      const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
+    if (!maybeUser) {
+      alert("not logged in, logging out")
+      this.userInfo = maybeUser
+      this.$router.push("/")
+      return
+    }
       fetch(this.props.baseURL + '/scores', {
         headers: {
           'Content-Type': 'application/json',
@@ -878,6 +886,11 @@ export default {
     }
   },
   mounted() {
+    const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
+    if (!maybeUser) {
+      this.$router.push("/")
+      return
+    }
     this.positionShips('baseOne', this.baseOneShips)
     this.positionShips('baseTwo', this.baseTwoShips)
   },

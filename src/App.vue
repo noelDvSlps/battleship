@@ -1,10 +1,20 @@
 <template>
   <div id="main-container">
-    <user-credentials
+    <h1>{{ $route.path }}</h1>
+    <router-view
+      :props="{ userInfo: this.userInfo, baseURL: this.baseURL, difficulties: this.difficulties }"
+      @show-top-ten="windows.topTen = true"
+      @quit-battleship="quitBattleship"
       @get-user-info="getUserInfo"
+      @exit-top-ten="windows.topTen = false"
+    >
+    </router-view>
+
+    <!-- <user-credentials
+      
       v-if="windows.logIn === true"
       :props="{ baseURL: this.baseURL }"
-    ></user-credentials>
+    ></user-credentials> -->
 
     <top-ten
       :props="{ baseURL: this.baseURL, difficulties: this.difficulties }"
@@ -13,12 +23,12 @@
     >
     </top-ten>
 
-    <app-table
+    <!-- <app-table
       v-if="windows.playground === true"
       :props="{ userInfo: this.userInfo, baseURL: this.baseURL, difficulties: this.difficulties }"
       @show-top-ten="windows.topTen = true"
       @quit-battleship="quitBattleship"
-    ></app-table>
+    ></app-table> -->
   </div>
 </template>
 
