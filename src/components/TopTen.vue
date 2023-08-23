@@ -26,7 +26,7 @@
             style="margin-left: 20px"
           >
           <option
-          key = "all"
+          key = "showAll"
           :value="JSON.stringify(this.showAll)"
           :selected="this.isItDefault(this.showAll.id)"
           >
