@@ -21,7 +21,7 @@ const routes = [
     component: TopTenVue
   },
   {
-    path: '/:notFound',
+    path: '/:pathMatch(.*)*',
     name: 'PageNotFound',
     component: PageNotFoundVue
   }
