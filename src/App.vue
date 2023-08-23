@@ -49,7 +49,13 @@ export default {
     }
   },
   async mounted() {
-    this.difficulties = await this.getDifficulties()
+    try {
+      this.difficulties = await this.getDifficulties()
+    } catch (e) {
+      alert(e)
+      throw new Error(e)
+    }
+
     const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
     if (maybeUser) {
       this.userInfo = maybeUser
@@ -79,10 +85,6 @@ export default {
         }
         return response.json()
       })
-      // .then (response => {
-      //   console.log(response)
-      //   return (response)
-      // })
     }
   }
 }

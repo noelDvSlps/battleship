@@ -60,11 +60,17 @@ export default {
       const password = this.password
       const confirmPassword = this.confirmPassword
 
-      if (!this.signInWindow) {
-        this.signUp(username, password, confirmPassword)
+      try {
+        if (!this.signInWindow) {
+         this.signUp(username, password, confirmPassword)
+        
       } else {
         this.signIn(username, password)
       }
+      } catch (e) {
+        throw new Error(e)
+      }
+      
     },
     getUserInfo(userInfo) {
       this.$emit('get-user-info', userInfo)
@@ -80,14 +86,23 @@ export default {
         },
         method: 'POST',
         body: JSON.stringify({ username, password })
-      }).then((response) => {
-        console.log(response)
-        if (!response.ok) {
-          alert('registering user failed')
-          throw new Error('registering user failed')
+        }).then(async (response) => {
+          const json_response = await response.json()
+        if(!response.ok) {
+            console.log(json_response[0])
+            const isArray = (Array.isArray(json_response))
+          //if it is an array, there is an error
+          if (isArray) {
+            let errors = []
+            json_response[0].errors.issues.map(issue => {
+              errors.push(issue.message)
+            })
+            alert(errors)
+            throw new Error(errors)
+          }
+          throw new Error(JSON.stringify(json_response))
         }
-        this.signIn(username, password)
-        return response.json()
+        return(json_response)
       })
     },
 
