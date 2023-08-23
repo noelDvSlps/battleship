@@ -27,7 +27,6 @@
 export default {
   props: ['props'],
   name: 'UserCredentials',
-  emits: ['get-user-info'],
 
   data() {
     return {
@@ -73,9 +72,7 @@ export default {
       }
       
     },
-    getUserInfo(userInfo) {
-      this.$emit('get-user-info', userInfo)
-    },
+    
     signUp(username, password, confirmPassword) {
       if (password !== confirmPassword) {
         alert('password not the same')
@@ -103,11 +100,13 @@ export default {
           alert(JSON.stringify(json_response))
           throw new Error(json_response)
         }
+       
         return(JSON.stringify(json_response))
       })
     },
 
     signIn(username, password) {
+      
       fetch(this.props.baseURL + '/users', {
         headers: {
           'Content-Type': 'application/json'
@@ -123,7 +122,6 @@ export default {
           return response.json()
         })
         .then((response) => {
-          this.getUserInfo(response.userInformation)
           localStorage.setItem('token', response.token)
           localStorage.setItem('userInformation', JSON.stringify(response.userInformation))
           this.$router.push("/battleground")

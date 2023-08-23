@@ -4,13 +4,14 @@
     <span class="green" style="position: absolute; right: 0">SCORE: {{ this.score }}</span>
   </div>
   <div id="navBar" style="position: relative">
-    <a @click="showTopTen">Top Ten </a>
+    <a v-if="this.gameStarted === false" @click="showTopTen">Top Ten </a>
     <span v-if="this.gameOver === true">| <a @click="playAgain">PLAY AGAIN</a> | </span>
     <a @click="quitBattleship" style="position: absolute; right: 0">LOG OUT</a>
   </div>
 
   <div>
-    Hi, {{ props.userInfo.username }}!
+    <!-- {{ this.userInfo.username }} -->
+    Hi, {{ this.userInfo.username }}!
     <div v-if="this.baseOneAllShotCells.length === 0" style="display: inline">
       <label for="">SELECT LEVEL</label>
       <select @change="changeLevel($event)" name="level" id="level" style="margin-left: 20px">
@@ -217,7 +218,6 @@
 <script>
 import RoundBomb from './RoundBomb.vue'
 export default {
-  emits: ['show-top-ten', 'quit-battleship'],
   props: ['props'],
   name: 'AppTable',
   components: {
@@ -225,6 +225,8 @@ export default {
   },
   data() {
     return {
+      userInfo: {},
+      gameStarted: false,
       gameOverWindow: false,
       difficulty: 1,
       tableWidth: 330,
@@ -282,10 +284,10 @@ export default {
       return difficulty === this.difficulty
     },
     showTopTen() {
-      this.$emit('show-top-ten')
+      this.$router.push("/top-ten") 
     },
     quitBattleship() {
-      this.$emit('quit-battleship')
+      localStorage.clear()
       this.$router.push("/")
     },
 
@@ -624,6 +626,9 @@ export default {
       }
     },
     onClick(row, col, id, arrayShips, arrayCellsAlreadyFired, baseHits) {
+      if (!this.gameStarted){
+        this.gameStarted = true
+      }
       if (this.gameOver) {
         return
       }
@@ -631,6 +636,7 @@ export default {
       this.playerTurn = true
       this.attack(row, col, id, arrayShips, arrayCellsAlreadyFired, baseHits)
       if (this.isGameOver()) {
+        
         this.gameResult = 'Game Over: You Win'
         return
       }
@@ -652,6 +658,7 @@ export default {
         this.baseTwoShips.length === this.baseTwoSank
 
       if (gameOver) {
+        this.gameStarted = false
         this.gameOver = true
         this.gameOverWindow = true
         this.backgroundSound = null
@@ -891,6 +898,7 @@ export default {
       this.$router.push("/")
       return
     }
+    this.userInfo =  maybeUser
     this.positionShips('baseOne', this.baseOneShips)
     this.positionShips('baseTwo', this.baseTwoShips)
   },

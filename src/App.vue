@@ -1,48 +1,17 @@
 <template>
   <div id="main-container">
-    <h1>{{ $route.path }}</h1>
     <router-view
-      :props="{ userInfo: this.userInfo, baseURL: this.baseURL, difficulties: this.difficulties }"
-      @show-top-ten="windows.topTen = true"
-      @quit-battleship="quitBattleship"
-      @get-user-info="getUserInfo"
-      @exit-top-ten="windows.topTen = false"
+      :props="{  baseURL: this.baseURL, difficulties: this.difficulties }"
     >
     </router-view>
 
-    <!-- <user-credentials
-      
-      v-if="windows.logIn === true"
-      :props="{ baseURL: this.baseURL }"
-    ></user-credentials> -->
-
-    <top-ten
-      :props="{ baseURL: this.baseURL, difficulties: this.difficulties }"
-      v-if="windows.topTen === true"
-      @exit-top-ten="windows.topTen = false"
-    >
-    </top-ten>
-
-    <!-- <app-table
-      v-if="windows.playground === true"
-      :props="{ userInfo: this.userInfo, baseURL: this.baseURL, difficulties: this.difficulties }"
-      @show-top-ten="windows.topTen = true"
-      @quit-battleship="quitBattleship"
-    ></app-table> -->
+   
   </div>
 </template>
 
 <script>
-import UserCredentials from './components/UserCredentials.vue'
-import TopTen from './components/TopTen.vue'
-import AppTable from './components/AppTable.vue'
 export default {
   name: 'App',
-  components: {
-    UserCredentials,
-    TopTen,
-    AppTable
-  },
 
   data() {
     return {

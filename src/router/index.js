@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import UserCredentialsVue from '../components/UserCredentials.vue'
 import AppTableVue from '../components/AppTable.vue'
+import TopTenVue from '../components/TopTen.vue'
+import PageNotFoundVue from '../components/PageNotFound.vue'
 
 const routes = [
   {
@@ -12,6 +14,16 @@ const routes = [
     path: '/battleground',
     name: 'Battleground',
     component: AppTableVue
+  },
+  {
+    path: '/top-ten',
+    name: 'TopTen',
+    component: TopTenVue
+  },
+  {
+    path: '/:notFound',
+    name: 'PageNotFound',
+    component: PageNotFoundVue
   }
 ]
 

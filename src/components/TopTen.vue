@@ -1,5 +1,5 @@
 <template class="template-class">
-  <div id="top-ten-container" class="prevent-select" style="position: absolute; top: 30px">
+  <div id="top-ten-container" class="prevent-select" >
     <table
       style="
         width: 100%;
@@ -79,7 +79,7 @@ export default {
       return Id === 0
     },
     onClickExit() {
-      this.$emit('exit-top-ten')
+      this.$router.push("/")  
     },
     getScores(level) {
       const parsed_difficulty = JSON.parse(level)
@@ -105,9 +105,10 @@ export default {
 </script>
 <style scoped>
 #top-ten-container {
-  position: absolute;
-  z-index: 100;
-  width: 100%;
+  /* position: absolute; */
+  width: 80vw;
+  height: 80vh;
+  /* z-index: 100; */
   height: 100%;
   padding: 25px;
 }
