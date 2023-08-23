@@ -100,9 +100,10 @@ export default {
             alert(errors)
             throw new Error(errors)
           }
-          throw new Error(JSON.stringify(json_response))
+          alert(JSON.stringify(json_response))
+          throw new Error(json_response)
         }
-        return(json_response)
+        return(JSON.stringify(json_response))
       })
     },
 
