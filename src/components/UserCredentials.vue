@@ -46,7 +46,7 @@ export default {
     changeBtnCaption() {
       this.signInWindow = !this.signInWindow
     },
-    signInOrSignUp() {
+    async signInOrSignUp() {
       // 👇🏾 you need to wait two second to invoke this function again / also prevents twice form submission
       const newTimeStamp = this.getTimestampInSeconds()
       if (newTimeStamp - this.timeStamp < 2) {
@@ -61,7 +61,9 @@ export default {
 
       try {
         if (!this.signInWindow) {
-         this.signUp(username, password, confirmPassword)
+         await this.signUp(username, password, confirmPassword)
+         
+         this.signIn(username, password)
         
       } else {
         this.signIn(username, password)
@@ -79,7 +81,7 @@ export default {
         alert('password not the same')
         return
       }
-      fetch(this.props.baseURL + '/users/register', {
+      return fetch(this.props.baseURL + '/users/register', {
         headers: {
           'Content-Type': 'application/json'
         },
