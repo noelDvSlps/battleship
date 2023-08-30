@@ -294,7 +294,7 @@ export default {
     },
 
     addUserScore(value, userId, difficultyId) {
-      alert(userId)
+      
       const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
       if (!maybeUser) {
         alert('not logged in, logging out')
@@ -668,11 +668,12 @@ export default {
         this.baseTwoShips.length === this.baseTwoSank
 
       if (gameOver) {
+        const userInfo = JSON.parse(localStorage.getItem("userInformation"))
         this.gameStarted = false
         this.gameOver = true
         this.gameOverWindow = true
         this.backgroundSound = null
-        this.addUserScore(this.score, this.props.userInfo.userId, this.difficultyId)
+        this.addUserScore(this.score, this.props.userInfo.userId || userInfo.userId , this.difficultyId)
       }
       return gameOver
     },
