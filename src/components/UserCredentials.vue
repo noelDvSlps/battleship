@@ -1,4 +1,5 @@
 <template class="template-class">
+  <h1>BATTLESHIP</h1>
   <form @submit.prevent="signInOrSignUp" style="display: flex; flex-direction: column; width: 100%">
     <label for="">Username</label>
     <input id="username" type="text" required v-model="username" />
