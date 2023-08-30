@@ -135,6 +135,7 @@ export default {
         .then((response) => {
           localStorage.setItem('token', response.token)
           localStorage.setItem('userInformation', JSON.stringify(response.userInformation))
+          this.userInfo= response.userInformation
           this.$router.push('/battleground')
         })
     }

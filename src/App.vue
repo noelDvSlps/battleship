@@ -54,6 +54,7 @@ export default {
     },
     quitBattleship() {
       localStorage.clear()
+      this.userInfo ={}
       this.windows.logIn = true
       this.windows.playground = false
     },
