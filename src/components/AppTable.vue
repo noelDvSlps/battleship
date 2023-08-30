@@ -596,8 +596,15 @@ export default {
         isHit = this.findUnit([row, col], arrayShips)
 
         if (isHit) {
+          let multiplier = 1
+          if (this.difficulty === "Medium") {
+            multiplier = 2
+          }
+          if (this.difficulty === "Hard") {
+            multiplier = 3
+          }
           innerText = '🔥'
-          score = 250 
+          score = 250 * multiplier
           this.addHitCell(baseHits, [row, col])
           const shipSank = this.isShipSank(baseHits, arrayShips)
           if (shipSank) {
