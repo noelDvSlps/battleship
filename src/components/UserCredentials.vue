@@ -1,5 +1,4 @@
 <template class="template-class">
-  <div>{{ this.props.baseURL }}</div>
   <form @submit.prevent="signInOrSignUp" style="display: flex; flex-direction: column; width: 100%">
     <label for="">Username</label>
     <input id="username" type="text" required v-model="username" />
