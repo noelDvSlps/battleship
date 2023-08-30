@@ -18,7 +18,7 @@
             ❌
           </button>
 
-          <label for="">TOP TEN FOR 👉🏾</label>
+          <label for="">{{ this.loading ? "Loading..." : "" }} TOP TEN FOR 👉🏾</label>
           <select
             @change="getScores($event.target.value)"
             name="level"
@@ -68,6 +68,7 @@ export default {
   components: {},
   data() {
     return {
+      loading: false,
       rank: 0,
       topten: {},
       users: {},
@@ -82,10 +83,11 @@ export default {
       this.$router.push("/")  
     },
     getScores(level) {
+      this.loading = true
       const parsed_difficulty = JSON.parse(level)
       console.log(level)
       const query = parsed_difficulty.id === 0 ? "" : `?level=${parsed_difficulty._id}`
-      return fetch(this.props.baseURL + `/scores${query}`)
+      return  fetch(this.props.baseURL + `/scores${query}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error('could not get items')
@@ -94,13 +96,16 @@ export default {
         })
         .then((res) => {
           this.topten = res.data
+          this.loading = false
           return res
         })
     }
   },
 
-  mounted() {
-    this.getScores(JSON.stringify(this.showAll))
+  async mounted  () {
+    this.loading = true
+    await this.getScores(JSON.stringify(this.showAll))
+    this.loading = false
   }
 }
 </script>

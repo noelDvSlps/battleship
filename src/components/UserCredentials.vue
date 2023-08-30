@@ -1,5 +1,6 @@
 <template class="template-class">
   <h1>BATTLESHIP</h1>
+  <h2>{{ this.loading ? "Loading..." : "" }}</h2>
   <form @submit.prevent="signInOrSignUp" style="display: flex; flex-direction: column; width: 100%">
     <label for="">Username</label>
     <input id="username" type="text" required v-model="username" />
@@ -31,6 +32,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       signInWindow: true,
       btnCaption: 'Sign In',
       username: '',
@@ -61,12 +63,15 @@ export default {
 
       try {
         if (!this.signInWindow) {
+          this.loading = true
          await this.signUp(username, password, confirmPassword)
-         
-         this.signIn(username, password)
+         await this.signIn(username, password)
+          this.loading = false
         
       } else {
-        this.signIn(username, password)
+        this.loading = true
+        await this.signIn(username, password)
+         this.loading = false
       }
       } catch (e) {
         throw new Error(e)
