@@ -12,6 +12,7 @@
   <div>
     <!-- {{ this.userInfo.username }} -->
     Hi, {{ this.userInfo.username }}!
+   
     <div v-if="this.baseOneAllShotCells.length === 0" style="display: inline">
       <label for="">SELECT LEVEL</label>
       <select @change="changeLevel($event)" name="level" id="level" style="margin-left: 20px">
@@ -19,7 +20,7 @@
           v-for="difficulty in props.difficulties"
           :key="difficulty"
           :value="JSON.stringify(difficulty)"
-          :selected="isSelected(difficulty.id)"
+          :selected="isSelected(difficulty.difficulty)"
         >
           {{ difficulty.difficulty }}
         </option>
@@ -228,7 +229,8 @@ export default {
       userInfo: {},
       gameStarted: false,
       gameOverWindow: false,
-      difficulty: 1,
+      difficulty: "Easy",
+      difficultyId: "64eedd7f6efeb1415d5873fb",
       tableWidth: 330,
       level: 'easy',
       symbol: '❌',
@@ -321,11 +323,13 @@ export default {
       }, 500)
     },
     changeGridSize(event) {
-
+      
       const difficulty = JSON.parse(event.target.value)
-      this.difficulty = difficulty.id
-      this.gridSize = difficulty.gridsize
-      this.cellSize = this.tableWidth / difficulty.gridsize
+
+      this.difficulty = difficulty.difficulty
+      this.difficultyId = difficulty._id
+      this.gridSize = difficulty.gridSize
+      this.cellSize = this.tableWidth / difficulty.gridSize
     },
     playAgain() {
       this.backgroundSound = 'War.mp3'
@@ -593,7 +597,7 @@ export default {
 
         if (isHit) {
           innerText = '🔥'
-          score = 250 * Number(this.difficulty)
+          score = 250 
           this.addHitCell(baseHits, [row, col])
           const shipSank = this.isShipSank(baseHits, arrayShips)
           if (shipSank) {
@@ -662,7 +666,7 @@ export default {
         this.gameOver = true
         this.gameOverWindow = true
         this.backgroundSound = null
-        this.addUserScore(this.score, this.props.userInfo.userId, this.difficulty)
+        this.addUserScore(this.score, this.props.userInfo.userId, this.difficultyId)
       }
       return gameOver
     },

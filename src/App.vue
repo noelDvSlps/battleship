@@ -1,7 +1,7 @@
 <template>
   <div id="main-container">
     <router-view
-      :props="{  baseURL: this.baseURL, difficulties: this.difficulties }"
+      :props="{  baseURL: this.baseURL, difficulties: this.difficulties, userInfo: this.userInfo }"
     >
     </router-view>
 
@@ -22,7 +22,7 @@ export default {
         gameOver: false
       },
       difficulties: [],
-      baseURL: 'http://localhost:3000',
+      baseURL: 'http://localhost:5000/api/v1',
       userInfo: {},
       loginSuccess: false
     }
@@ -30,7 +30,11 @@ export default {
   async mounted() {
     try {
       this.difficulties = await this.getDifficulties()
+      this.difficulties = this.difficulties.data
+      console.log(this.difficulties)
+     
     } catch (e) {
+     
       alert(e)
       throw new Error(e)
     }
@@ -58,6 +62,7 @@ export default {
       this.windows.playground = false
     },
     getDifficulties() {
+    
       return fetch(this.baseURL + '/difficulties').then((response) => {
         if (!response.ok) {
           throw new Error('could not get difficulties')

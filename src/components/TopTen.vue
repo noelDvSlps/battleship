@@ -52,9 +52,9 @@
       </tr>
       <tr v-for="(score, index) in this.topten" :key="score" :index="index">
         <td style="text-align: center; border: 1px solid black">{{ index + 1 }}</td>
-        <td style="text-align: center; border: 1px solid black">{{ score.user.username }}</td>
+        <td style="text-align: center; border: 1px solid black">{{ score.userId.username }}</td>
         <td style="text-align: center; border: 1px solid black">
-          {{ score.difficulty.difficulty }}
+          {{ score.difficultyId.difficulty }}
         </td>
         <td style="text-align: center; border: 1px solid black">{{ score.value }}</td>
       </tr>
@@ -83,7 +83,8 @@ export default {
     },
     getScores(level) {
       const parsed_difficulty = JSON.parse(level)
-      const query = parsed_difficulty.id === 0 ? "" : `?level=${parsed_difficulty.id}`
+      
+      const query = parsed_difficulty.id === 0 ? "" : `?level=${parsed_difficulty._id}`
       return fetch(this.props.baseURL + `/scores${query}`)
         .then((response) => {
           if (!response.ok) {
@@ -92,7 +93,7 @@ export default {
           return response.json()
         })
         .then((res) => {
-          this.topten = res.slice(0, 10)
+          this.topten = res.data
           return res
         })
     }
