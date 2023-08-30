@@ -1,6 +1,6 @@
 <template class="template-class">
   <h1>BATTLESHIP</h1>
-  <h2>{{ this.loading ? "Loading..." : "" }}</h2>
+ 
   <form @submit.prevent="signInOrSignUp" style="display: flex; flex-direction: column; width: 100%">
     <label for="">Username</label>
     <input id="username" type="text" required v-model="username" />
@@ -21,7 +21,7 @@
     </div>
 
     <button type="submit" @click="signInOrSignUp" style="margin-top: 20px">
-      {{ this.signInWindow ? 'Sign In' : 'Sign Up' }}
+      {{ this.loading ? "Loading..." : this.signInWindow ? 'Sign In' : 'Sign Up' }}
     </button>
   </form>
 </template>
@@ -49,6 +49,7 @@ export default {
       this.signInWindow = !this.signInWindow
     },
     async signInOrSignUp() {
+      this.loading = true
       // 👇🏾 you need to wait two second to invoke this function again / also prevents twice form submission
       const newTimeStamp = this.getTimestampInSeconds()
       if (newTimeStamp - this.timeStamp < 2) {
@@ -62,18 +63,16 @@ export default {
       const confirmPassword = this.confirmPassword
 
       try {
+       
         if (!this.signInWindow) {
-          this.loading = true
          await this.signUp(username, password, confirmPassword)
          await this.signIn(username, password)
-          this.loading = false
-        
       } else {
-        this.loading = true
         await this.signIn(username, password)
-         this.loading = false
       }
+      this.loading = false
       } catch (e) {
+        this.loading = false
         throw new Error(e)
       }
       
@@ -106,7 +105,7 @@ export default {
           alert(JSON.stringify(json_response))
           throw new Error(json_response)
         }
-       
+        
         return(JSON.stringify(json_response))
       })
     },
@@ -123,6 +122,7 @@ export default {
         .then((response) => {
           if (!response.ok) {
             alert('login failed')
+            this.loading = false
             throw new Error('login failed')
           }
           return response.json()
