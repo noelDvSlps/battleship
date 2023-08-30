@@ -1,5 +1,5 @@
 <template class="template-class">
-  <div id="top-ten-container" class="prevent-select" >
+  <div id="top-ten-container" class="prevent-select">
     <table
       style="
         width: 100%;
@@ -18,20 +18,20 @@
             ❌
           </button>
 
-          <label for="">{{ this.loading ? "Loading..." : "" }} TOP TEN FOR 👉🏾</label>
+          <label for="">{{ this.loading ? 'Loading...' : '' }} TOP TEN FOR 👉🏾</label>
           <select
             @change="getScores($event.target.value)"
             name="level"
             id="level"
             style="margin-left: 20px"
           >
-          <option
-          key = "showAll"
-          :value="JSON.stringify(this.showAll)"
-          :selected="this.isItDefault(this.showAll.id)"
-          >
-            {{this.showAll.difficulty}}
-          </option>
+            <option
+              key="showAll"
+              :value="JSON.stringify(this.showAll)"
+              :selected="this.isItDefault(this.showAll.id)"
+            >
+              {{ this.showAll.difficulty }}
+            </option>
             <option
               v-for="difficulty in props.difficulties"
               :key="difficulty"
@@ -52,7 +52,9 @@
       </tr>
       <tr v-for="(score, index) in this.topten" :key="score" :index="index">
         <td style="text-align: center; border: 1px solid black">{{ index + 1 }}</td>
-        <td style="text-align: center; border: 1px solid black">{{ score.userId.username }}</td>
+        <td style="text-align: center; border: 1px solid black">
+          {{ score.userId.username ? score.userId.username : 'anonymous' }}
+        </td>
         <td style="text-align: center; border: 1px solid black">
           {{ score.difficultyId.difficulty }}
         </td>
@@ -72,7 +74,7 @@ export default {
       rank: 0,
       topten: {},
       users: {},
-      showAll: {"id": 0, "difficulty": "All"}
+      showAll: { id: 0, difficulty: 'All' }
     }
   },
   methods: {
@@ -80,14 +82,14 @@ export default {
       return Id === 0
     },
     onClickExit() {
-      this.$router.push("/")  
+      this.$router.push('/')
     },
     getScores(level) {
       this.loading = true
       const parsed_difficulty = JSON.parse(level)
       console.log(level)
-      const query = parsed_difficulty.id === 0 ? "" : `?level=${parsed_difficulty._id}`
-      return  fetch(this.props.baseURL + `/scores${query}`)
+      const query = parsed_difficulty.id === 0 ? '' : `?level=${parsed_difficulty._id}`
+      return fetch(this.props.baseURL + `/scores${query}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error('could not get items')
@@ -102,7 +104,7 @@ export default {
     }
   },
 
-  async mounted  () {
+  async mounted() {
     this.loading = true
     await this.getScores(JSON.stringify(this.showAll))
     this.loading = false

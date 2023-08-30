@@ -1,11 +1,9 @@
 <template>
   <div id="main-container">
     <router-view
-      :props="{  baseURL: this.baseURL, difficulties: this.difficulties, userInfo: this.userInfo }"
+      :props="{ baseURL: this.baseURL, difficulties: this.difficulties, userInfo: this.userInfo }"
     >
     </router-view>
-
-   
   </div>
 </template>
 
@@ -32,9 +30,7 @@ export default {
       this.difficulties = await this.getDifficulties()
       this.difficulties = this.difficulties.data
       console.log(this.difficulties)
-     
     } catch (e) {
-     
       alert(e)
       throw new Error(e)
     }
@@ -62,7 +58,6 @@ export default {
       this.windows.playground = false
     },
     getDifficulties() {
-    
       return fetch(this.baseURL + '/difficulties').then((response) => {
         if (!response.ok) {
           throw new Error('could not get difficulties')

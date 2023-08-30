@@ -1,6 +1,6 @@
 <template class="template-class">
   <h1>BATTLESHIP</h1>
- 
+
   <form @submit.prevent="signInOrSignUp" style="display: flex; flex-direction: column; width: 100%">
     <label for="">Username</label>
     <input id="username" type="text" required v-model="username" />
@@ -21,7 +21,7 @@
     </div>
 
     <button type="submit" @click="signInOrSignUp" style="margin-top: 20px">
-      {{ this.loading ? "Loading..." : this.signInWindow ? 'Sign In' : 'Sign Up' }}
+      {{ this.loading ? 'Loading...' : this.signInWindow ? 'Sign In' : 'Sign Up' }}
     </button>
   </form>
 </template>
@@ -63,21 +63,27 @@ export default {
       const confirmPassword = this.confirmPassword
 
       try {
-       
         if (!this.signInWindow) {
-         await this.signUp(username, password, confirmPassword)
-         await this.signIn(username, password)
-      } else {
-        await this.signIn(username, password)
-      }
-      this.loading = false
+          const result = await this.signUp(username, password, confirmPassword)
+          const parsedResult = JSON.parse(result)
+          if (parsedResult.error) {
+            alert('username already exist')
+            // this.loading = false
+            throw new Error(parsedResult.error)
+          }
+          await this.signIn(username, password)
+        } else {
+          await this.signIn(username, password)
+        }
+        this.loading = false
       } catch (e) {
         this.loading = false
         throw new Error(e)
       }
-      
     },
-    
+
+    // {"success":false,"error":{"index":0,"code":11000,"keyPattern":{"username":1},"keyValue":{"username":"noel"}}}
+
     signUp(username, password, confirmPassword) {
       if (password !== confirmPassword) {
         alert('password not the same')
@@ -89,14 +95,14 @@ export default {
         },
         method: 'POST',
         body: JSON.stringify({ username, password })
-        }).then(async (response) => {
-          const json_response = await response.json()
-        if(!response.ok) {
-            const isArray = (Array.isArray(json_response))
+      }).then(async (response) => {
+        const json_response = await response.json()
+        if (!response.ok) {
+          const isArray = Array.isArray(json_response)
           //if it is an array, there is an error
           if (isArray) {
             let errors = []
-            json_response[0].errors.issues.map(issue => {
+            json_response[0].errors.issues.map((issue) => {
               errors.push(issue.message)
             })
             alert(errors)
@@ -105,20 +111,19 @@ export default {
           alert(JSON.stringify(json_response))
           throw new Error(json_response)
         }
-        
-        return(JSON.stringify(json_response))
+
+        return JSON.stringify(json_response)
       })
     },
 
     signIn(username, password) {
-      
       fetch(this.props.baseURL + '/users', {
         headers: {
           'Content-Type': 'application/json'
         },
         method: 'POST',
         body: JSON.stringify({ username, password })
-            })
+      })
         .then((response) => {
           if (!response.ok) {
             alert('login failed')
@@ -130,7 +135,7 @@ export default {
         .then((response) => {
           localStorage.setItem('token', response.token)
           localStorage.setItem('userInformation', JSON.stringify(response.userInformation))
-          this.$router.push("/battleground")
+          this.$router.push('/battleground')
         })
     }
   },
@@ -138,9 +143,8 @@ export default {
     const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
     if (maybeUser) {
       this.userInfo = maybeUser
-      this.$router.push("/battleground")
+      this.$router.push('/battleground')
     }
-   
   }
 }
 </script>

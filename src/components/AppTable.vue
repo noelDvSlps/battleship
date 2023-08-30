@@ -12,7 +12,7 @@
   <div>
     <!-- {{ this.userInfo.username }} -->
     Hi, {{ this.userInfo.username }}!
-   
+
     <div v-if="this.baseOneAllShotCells.length === 0" style="display: inline">
       <label for="">SELECT LEVEL</label>
       <select @change="changeLevel($event)" name="level" id="level" style="margin-left: 20px">
@@ -229,8 +229,8 @@ export default {
       userInfo: {},
       gameStarted: false,
       gameOverWindow: false,
-      difficulty: "Easy",
-      difficultyId: "64eedd7f6efeb1415d5873fb",
+      difficulty: 'Easy',
+      difficultyId: '64eedd7f6efeb1415d5873fb',
       tableWidth: 330,
       level: 'easy',
       symbol: '❌',
@@ -286,21 +286,21 @@ export default {
       return difficulty === this.difficulty
     },
     showTopTen() {
-      this.$router.push("/top-ten") 
+      this.$router.push('/top-ten')
     },
     quitBattleship() {
       localStorage.clear()
-      this.$router.push("/")
+      this.$router.push('/')
     },
 
     addUserScore(value, userId, difficultyId) {
       const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
-    if (!maybeUser) {
-      alert("not logged in, logging out")
-      this.userInfo = maybeUser
-      this.$router.push("/")
-      return
-    }
+      if (!maybeUser) {
+        alert('not logged in, logging out')
+        this.userInfo = maybeUser
+        this.$router.push('/')
+        return
+      }
       fetch(this.props.baseURL + '/scores', {
         headers: {
           'Content-Type': 'application/json',
@@ -323,7 +323,6 @@ export default {
       }, 500)
     },
     changeGridSize(event) {
-      
       const difficulty = JSON.parse(event.target.value)
 
       this.difficulty = difficulty.difficulty
@@ -597,10 +596,10 @@ export default {
 
         if (isHit) {
           let multiplier = 1
-          if (this.difficulty === "Medium") {
+          if (this.difficulty === 'Medium') {
             multiplier = 2
           }
-          if (this.difficulty === "Hard") {
+          if (this.difficulty === 'Hard') {
             multiplier = 3
           }
           innerText = '🔥'
@@ -637,7 +636,7 @@ export default {
       }
     },
     onClick(row, col, id, arrayShips, arrayCellsAlreadyFired, baseHits) {
-      if (!this.gameStarted){
+      if (!this.gameStarted) {
         this.gameStarted = true
       }
       if (this.gameOver) {
@@ -647,7 +646,6 @@ export default {
       this.playerTurn = true
       this.attack(row, col, id, arrayShips, arrayCellsAlreadyFired, baseHits)
       if (this.isGameOver()) {
-        
         this.gameResult = 'Game Over: You Win'
         return
       }
@@ -906,10 +904,10 @@ export default {
   mounted() {
     const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
     if (!maybeUser) {
-      this.$router.push("/")
+      this.$router.push('/')
       return
     }
-    this.userInfo =  maybeUser
+    this.userInfo = maybeUser
     this.positionShips('baseOne', this.baseOneShips)
     this.positionShips('baseTwo', this.baseTwoShips)
   },
