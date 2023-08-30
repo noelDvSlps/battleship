@@ -294,6 +294,7 @@ export default {
     },
 
     addUserScore(value, userId, difficultyId) {
+      alert(userId)
       const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
       if (!maybeUser) {
         alert('not logged in, logging out')

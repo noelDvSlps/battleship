@@ -53,7 +53,7 @@
       <tr v-for="(score, index) in this.topten" :key="score" :index="index">
         <td style="text-align: center; border: 1px solid black">{{ index + 1 }}</td>
         <td style="text-align: center; border: 1px solid black">
-          {{ score.userId.username ? score.userId.username : 'anonymous' }}
+          {{ score.userId.username  }}
         </td>
         <td style="text-align: center; border: 1px solid black">
           {{ score.difficultyId.difficulty }}
