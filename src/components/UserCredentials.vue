@@ -6,7 +6,7 @@
     <input id="username" type="text" required v-model="username" />
     <label for="">Password</label>
     <input required v-model="password" id="password" type="password" autocomplete="on" />
-    <div v-if="signInWindow === false">
+    <div v-if="signInWindow === false" >
       <label for="" style="display: block">Confirm Password</label>
       <input
         required
@@ -14,15 +14,17 @@
         id="confirmPassword"
         type="password"
         autocomplete="on"
+        style="width: 100%;"
       />
     </div>
-    <div style="text-align: right; margin-top: 10px">
-      <a @click="changeBtnCaption">{{ !this.signInWindow ? 'Sign In' : 'Register' }}</a>
-    </div>
+   
 
     <button type="submit" @click="signInOrSignUp" style="margin-top: 20px">
       {{ this.loading ? 'Loading...' : this.signInWindow ? 'Sign In' : 'Sign Up' }}
     </button>
+    <div style="text-align: right; margin-top: 10px">
+      <a @click="changeBtnCaption">{{ !this.signInWindow ? 'Already have an account? Click here' : 'Don\'t have an account? Click here' }}</a>
+    </div>
   </form>
 </template>
 <script>
@@ -61,22 +63,24 @@ export default {
       const username = this.username
       const password = this.password
       const confirmPassword = this.confirmPassword
-
+      console.log(this.props.userInfo)
       try {
         if (!this.signInWindow) {
           const result = await this.signUp(username, password, confirmPassword)
           const parsedResult = JSON.parse(result)
+         
           if (parsedResult.error) {
             alert('username already exist')
-            // this.loading = false
             throw new Error(parsedResult.error)
-          }
+          } 
+
           await this.signIn(username, password)
         } else {
           await this.signIn(username, password)
         }
         this.loading = false
       } catch (e) {
+       
         this.loading = false
         throw new Error(e)
       }
@@ -85,6 +89,11 @@ export default {
     // {"success":false,"error":{"index":0,"code":11000,"keyPattern":{"username":1},"keyValue":{"username":"noel"}}}
 
     signUp(username, password, confirmPassword) {
+      console.log(this.props)
+      if (password.trim() === "") {
+        alert('password cannot be empty')
+        return
+      }
       if (password !== confirmPassword) {
         alert('password not the same')
         return
@@ -95,49 +104,38 @@ export default {
         },
         method: 'POST',
         body: JSON.stringify({ username, password })
-      }).then(async (response) => {
+      })
+      .then(async (response) => {
         const json_response = await response.json()
         if (!response.ok) {
-          const isArray = Array.isArray(json_response)
-          //if it is an array, there is an error
-          if (isArray) {
-            let errors = []
-            json_response[0].errors.issues.map((issue) => {
-              errors.push(issue.message)
-            })
-            alert(errors)
-            throw new Error(errors)
-          }
-          alert(JSON.stringify(json_response))
           throw new Error(json_response)
         }
-
         return JSON.stringify(json_response)
       })
     },
 
-    signIn(username, password) {
-      fetch(this.props.baseURL + '/users', {
+    async signIn(username, password) {
+      let response = await fetch(this.props.baseURL + '/users', {
         headers: {
           'Content-Type': 'application/json'
         },
         method: 'POST',
         body: JSON.stringify({ username, password })
       })
-        .then((response) => {
+      
+     
+      const jsonResponse = await (response.json())
+        
           if (!response.ok) {
-            alert('login failed')
+            alert(jsonResponse.message)
             this.loading = false
-            throw new Error('login failed')
+            throw new Error('jsonResponse.message')
           }
-          return response.json()
-        })
-        .then((response) => {
-          localStorage.setItem('token', response.token)
-          localStorage.setItem('userInformation', JSON.stringify(response.userInformation))
-          this.userInfo= response.userInformation
+          
+          localStorage.setItem('token', jsonResponse.token)
+          localStorage.setItem('userInformation', JSON.stringify(jsonResponse.userInformation))
           this.$router.push('/battleground')
-        })
+       
     }
   },
   mounted() {

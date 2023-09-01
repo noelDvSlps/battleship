@@ -637,12 +637,13 @@ export default {
       }
     },
     onClick(row, col, id, arrayShips, arrayCellsAlreadyFired, baseHits) {
-      if (!this.gameStarted) {
-        this.gameStarted = true
-      }
       if (this.gameOver) {
         return
       }
+      if (!this.gameStarted) {
+        this.gameStarted = true
+      }
+     
 
       this.playerTurn = true
       this.attack(row, col, id, arrayShips, arrayCellsAlreadyFired, baseHits)
