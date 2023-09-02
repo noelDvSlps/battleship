@@ -219,6 +219,7 @@
 <script>
 import RoundBomb from './RoundBomb.vue'
 export default {
+  emits: ['logOut'],
   props: ['props'],
   name: 'AppTable',
   components: {
@@ -282,6 +283,7 @@ export default {
     }
   },
   methods: {
+
     isSelected(difficulty) {
       return difficulty === this.difficulty
     },
@@ -291,6 +293,7 @@ export default {
     quitBattleship() {
       localStorage.clear()
       this.$router.push('/')
+      this.$emit("logOut")
     },
 
     addUserScore(value, userId, difficultyId) {

@@ -29,6 +29,7 @@
 </template>
 <script>
 export default {
+  emits: ['signIn'],
   props: ['props'],
   name: 'UserCredentials',
 
@@ -134,7 +135,9 @@ export default {
           
           localStorage.setItem('token', jsonResponse.token)
           localStorage.setItem('userInformation', JSON.stringify(jsonResponse.userInformation))
+          this.$emit("signIn", jsonResponse.userInformation)
           this.$router.push('/battleground')
+         
        
     }
   },

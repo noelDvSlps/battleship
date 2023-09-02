@@ -1,6 +1,10 @@
 <template>
   <div id="main-container">
+    <div>{{ this.message }}</div>
     <router-view
+    v-if = server
+    @logOut = "logOut"
+    @signIn = "signIn"
       :props="{ baseURL: this.baseURL, difficulties: this.difficulties, userInfo: this.userInfo }"
     >
     </router-view>
@@ -13,6 +17,8 @@ export default {
 
   data() {
     return {
+      server: false,
+      message: "Checking Server...",
       difficulties: [],
       baseURL: 'https://battleship-api-wgpw.onrender.com/api/v1',
       // baseURL: 'http://localhost:5000/api/v1',
@@ -20,38 +26,55 @@ export default {
       loginSuccess: false
     }
   },
+  
   async mounted() {
+    const attempts = 20
     
-    try {
-      this.difficulties = await this.getDifficulties()
-      this.difficulties = this.difficulties.data
-    } catch (e) {
-      alert("SERVER FAILED")
-      throw new Error(e)
-    }
-
+        for (let i = 0; i < attempts; i++) {
+            const server = await this.isServerOk()
+            const attempt = (`Checking Server... Attempt # ${i + 1}/${attempts}`)
+            this.message = `${attempt}...${server ? "Success" : "Failed"} `
+            if(server){
+              setTimeout(()=>{
+                this.message = ""
+                this.server = true
+              }, 1000)
+              break
+            }
+        }
+      
+    this.difficulties = await this.getDifficulties()
+    this.difficulties = this.difficulties.data
     const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
     if (maybeUser) {
       this.userInfo = maybeUser
-      // this.windows.logIn = false
-      // this.windows.playground = true
     }
   },
   methods: {
+    async isServerOk(){
+    try {
+      await fetch(this.baseURL)
+    } catch (err){
+      return false
+    }
+        return true
+  },
+    logOut(){
+      this.userInfo= {}
+    },
+    signIn(userInfo){
+      this.userInfo= userInfo
+    },
     getUserInfo(userInfo) {
       this.userInfo = userInfo
       this.loginSuccessful()
     },
     loginSuccessful() {
       this.loginSuccess = true
-      // this.windows.logIn = false
-      // this.windows.playground = true
     },
     quitBattleship() {
       localStorage.clear()
       this.userInfo ={}
-      // this.windows.logIn = true
-      // this.windows.playground = false
     },
     getDifficulties() {
       return fetch(this.baseURL + '/difficulties').then((response) => {
