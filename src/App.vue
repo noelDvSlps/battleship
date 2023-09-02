@@ -29,9 +29,9 @@ export default {
   
   async mounted() {
     const attempts = 20
-    
+    let server = false
         for (let i = 0; i < attempts; i++) {
-            const server = await this.isServerOk()
+            server = await this.isServerOk()
             const attempt = (`Checking Server... Attempt # ${i + 1}/${attempts}`)
             this.message = `${attempt}...${server ? "😁 Success" : "☹️ Failed"} `
             this.message = ((i+1) === attempts) ? "☹️ Cannot access server, please try again later" : this.message
@@ -43,7 +43,10 @@ export default {
               break
             }
         }
+    if(!server)  {
+      throw new Error("Cannot connect to server")
       
+    }
     this.difficulties = await this.getDifficulties()
     this.difficulties = this.difficulties.data
     const maybeUser = JSON.parse(localStorage.getItem('userInformation'))
