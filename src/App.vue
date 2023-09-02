@@ -33,7 +33,8 @@ export default {
         for (let i = 0; i < attempts; i++) {
             const server = await this.isServerOk()
             const attempt = (`Checking Server... Attempt # ${i + 1}/${attempts}`)
-            this.message = `${attempt}...${server ? "Success" : "Failed"} `
+            this.message = `${attempt}...${server ? "😁 Success" : "☹️ Failed"} `
+            this.message = ((i+1) === attempts) ? "☹️ Cannot access server, please try again later" : this.message
             if(server){
               setTimeout(()=>{
                 this.message = ""
