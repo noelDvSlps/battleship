@@ -89,7 +89,7 @@ export default {
 
     // {"success":false,"error":{"index":0,"code":11000,"keyPattern":{"username":1},"keyValue":{"username":"noel"}}}
 
-    signUp(username, password, confirmPassword) {
+    signUp(username, password, confirmPassword, createdAt = Date.now()) {
       console.log(this.props)
       if (password.trim() === "") {
         alert('password cannot be empty')
@@ -104,7 +104,7 @@ export default {
           'Content-Type': 'application/json'
         },
         method: 'POST',
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password, createdAt })
       })
       .then(async (response) => {
         const json_response = await response.json()
